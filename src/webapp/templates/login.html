@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Laudos WhatsApp</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f4f5f7; margin:0; }
+    .box { max-width:340px; margin:10vh auto; background:#fff; padding:2rem;
+           border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,.08); }
+    h1 { font-size:1.2rem; }
+    label { display:block; margin:.8rem 0 .2rem; font-size:.9rem; }
+    input { width:100%; padding:.6rem; border:1px solid #ccc; border-radius:8px;
+            box-sizing:border-box; }
+    button { margin-top:1.2rem; width:100%; padding:.7rem; border:0;
+             border-radius:8px; background:#e91e63; color:#fff; font-weight:600;
+             cursor:pointer; }
+    .erro { color:#c62828; font-size:.85rem; margin-top:.6rem; }
+  </style>
+</head>
+<body>
+  <form class="box" method="post" action="/login">
+    <h1>Acesso restrito</h1>
+    <label for="usuario">Usuário</label>
+    <input id="usuario" name="usuario" autocomplete="username" required>
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+    {% if erro %}<div class="erro">{{ erro }}</div>{% endif %}
+    <button type="submit">Entrar</button>
+  </form>
+</body>
+</html>
