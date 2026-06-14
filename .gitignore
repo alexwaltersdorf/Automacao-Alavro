@@ -1,0 +1,17 @@
+# Segredos e PII NUNCA são versionados (regra LGPD do projeto)
+.env
+.env.*
+!.env.example
+*.db
+db/
+pdfs/
+logs/
+backups/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Config real de portais (use apenas o *.example.yaml versionado)
+portais.yaml
+portais.yml

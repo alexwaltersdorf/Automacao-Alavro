@@ -1,0 +1,53 @@
+# Config de portais de laudos — EXEMPLO (NÃO contém segredos).
+# Segredos (senha, LabId, API key, token) ficam SÓ no .env, fora do git/Syncthing.
+# Este arquivo guarda metadados não sensíveis e os NOMES das variáveis de ambiente.
+#
+# Um Estabelecimento (Unidade) pode ter 3+ portais. Cada portal pode apontar
+# para uma instância do Evolution dedicada ou compartilhada pela unidade.
+
+estabelecimentos:
+  - unidade: "Unidade Centro"            # nome do estabelecimento
+    portais:
+
+      - slug: alvaro                     # vira coletor_alvaro.py
+        descricao: "Álvaro Apoio (AOL 2.0)"
+        url: "https://aol.alvaroapoio.com.br/login"
+        metodo: playwright               # playwright | api
+        pre_auth:
+          tipo: labid                    # labid | tenant | codigo_unidade | nenhum
+          env_var: ALVARO_LABID          # valor no .env
+        env:                             # nomes das variáveis (valores no .env)
+          user: ALVARO_USER
+          password: ALVARO_PASSWORD
+          url: ALVARO_URL
+        evolution:
+          instance_env: ALVARO_EVOLUTION_INSTANCE
+        metadados:                       # de onde sai cada campo obrigatório
+          fonte: tela                    # tela | pdf
+          nome: "seletor/coluna ou regra de extração"
+          cpf: "seletor/coluna ou regra de extração"
+          data_exame: "seletor/coluna ou regra de extração"
+          numero_os: "seletor/coluna ou regra de extração"
+        download:
+          tipo: link_temporario          # direto | link_temporario | iframe | sob_demanda
+          observacao: "validação por token/QR no Álvaro"
+
+      - slug: xpto
+        descricao: "Portal XPTO Lab"
+        url: "https://portal.xpto.com.br/login"
+        metodo: api                      # API oficial preferida sobre scraping
+        pre_auth:
+          tipo: nenhum
+        env:
+          api_base_url: XPTO_API_BASE_URL
+          token: XPTO_API_TOKEN
+        evolution:
+          instance_env: XPTO_EVOLUTION_INSTANCE
+        metadados:
+          fonte: api
+        download:
+          tipo: direto
+
+# Variáveis comuns do Evolution (valores no .env):
+#   EVOLUTION_BASE_URL
+#   EVOLUTION_API_KEY
