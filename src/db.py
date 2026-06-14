@@ -120,6 +120,16 @@ def inserir_laudo(rec: dict) -> bool:
     Idempotente por numero_os: ignora se já existe. Retorna True se inseriu.
     """
     agora = _agora()
+    # Colunas NOT NULL no banco de produção do Álvaro (nome, cpf, numero_os,
+    # data_exame): NUNCA inserir NULL. CPF é "opcional" para o Neomed, então
+    # ausente vira string vazia '' — satisfaz o NOT NULL sem violar a constraint
+    # (SQLite não permite alterar a constraint sem recriar a tabela).
+    nome = (rec.get("nome") or "").strip()
+    cpf = (rec.get("cpf") or "").strip()
+    data_exame = (rec.get("data_exame") or "").strip()
+    numero_os = (rec.get("numero_os") or "").strip()
+    if not numero_os:
+        raise ValueError("inserir_laudo: numero_os é obrigatório")
     with get_conn() as conn:
         cur = conn.execute(
             """
@@ -130,10 +140,10 @@ def inserir_laudo(rec: dict) -> bool:
             VALUES (?, ?, ?, ?, ?, ?, ?, 'pendente', 0, ?, ?)
             """,
             (
-                rec.get("nome", ""),
-                rec.get("cpf") or "",
-                rec["numero_os"],
-                rec.get("data_exame") or "",
+                nome,
+                cpf,
+                numero_os,
+                data_exame,
                 rec.get("caminho_pdf") or "",
                 rec.get("plataforma") or "",
                 rec.get("tipo_exame") or "",
