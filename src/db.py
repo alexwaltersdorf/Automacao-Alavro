@@ -241,11 +241,128 @@ def cadastrar_telefone(pid: int, telefone: str, liberar: bool) -> None:
         )
 
 
-def marcar_enviado(pid: int) -> None:
+def marcar_enviado(paciente_id: int, sucesso: bool = True) -> None:
+    """Marca o resultado do envio de um laudo (por id).
+
+    Aceita a assinatura ANTIGA do Álvaro: marcar_enviado(paciente_id, sucesso=True).
+    Os callers novos chamam marcar_enviado(pid) -> sucesso=True por padrão.
+    """
+    agora = _agora()
+    status = "enviado" if sucesso else "erro"
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE pacientes SET status_envio=?, "
+            "data_envio=CASE WHEN ?='enviado' THEN ? ELSE data_envio END, "
+            "atualizado_em=? WHERE id=?",
+            (status, status, agora, agora, paciente_id),
+        )
+
+
+# ===========================================================================
+# Camada de COMPATIBILIDADE RETROATIVA com o código de produção do Álvaro.
+# Os módulos do vault NÃO presentes neste repo (scraper_alvaro.py,
+# scraper_api.py, status_laudos.py) importam a API antiga do db.py. Como esses
+# arquivos são PRESERVADOS no deploy (não sobrescritos), o db.py novo precisa
+# expor as mesmas funções/assinaturas para não quebrar com ImportError.
+#   - upsert_paciente / buscar_paciente_por_os / salvar_telefone_por_os /
+#     marcar_pronto_para_envio: aliases que operam por numero_os.
+#   - _conectar / _agora_iso / _coluna_existe: helpers privados antigos.
+# ATENÇÃO: estas implementações são best-effort a partir das assinaturas
+# informadas; confirmar contra o db.py de produção antes do deploy.
+# ===========================================================================
+
+# Aliases de helpers privados usados pelo código antigo.
+_conectar = get_conn
+_agora_iso = _agora
+
+
+def _coluna_existe(*args) -> bool:
+    """Compat: aceita (coluna), (tabela, coluna) ou (conn, tabela, coluna)."""
+    largs = list(args)
+    if largs and isinstance(largs[0], sqlite3.Connection):
+        largs = largs[1:]
+    if len(largs) >= 2:
+        tabela, coluna = largs[0], largs[1]
+    elif len(largs) == 1:
+        tabela, coluna = "pacientes", largs[0]
+    else:
+        raise TypeError("_coluna_existe requer (coluna) ou (tabela, coluna)")
+    with get_conn() as conn:
+        cols = {r[1] for r in conn.execute(f"PRAGMA table_info({tabela})")}
+    return coluna in cols
+
+
+def upsert_paciente(rec: dict | None = None, **kwargs) -> int:
+    """Compat: insere OU atualiza um laudo por numero_os.
+
+    Equivalente ao fluxo antigo do scraper do Álvaro. Defaults seguros:
+    plataforma='alvaro' e tipo_exame='Laboratorial' quando não informados.
+    NUNCA toca telefone/pronto_para_envio/status_envio (preserva o gate humano).
+    Retorna o id do paciente.
+    """
+    dados = dict(rec or {})
+    dados.update(kwargs)
+    plataforma = (dados.get("plataforma") or "alvaro").strip()
+    tipo_exame = (dados.get("tipo_exame") or "Laboratorial").strip()
+    nome = (dados.get("nome") or "").strip()
+    cpf = (dados.get("cpf") or "").strip()            # NOT NULL na produção
+    numero_os = (dados.get("numero_os") or "").strip()
+    data_exame = (dados.get("data_exame") or "").strip()
+    caminho_pdf = (dados.get("caminho_pdf") or "").strip()
+    if not numero_os:
+        raise ValueError("upsert_paciente: numero_os é obrigatório")
+    agora = _agora()
+    with get_conn() as conn:
+        existente = conn.execute(
+            "SELECT id FROM pacientes WHERE numero_os=?", (numero_os,)
+        ).fetchone()
+        if existente:
+            # Atualiza só dados de origem; mantém caminho_pdf antigo se novo vazio.
+            conn.execute(
+                "UPDATE pacientes SET nome=?, cpf=?, data_exame=?, "
+                "caminho_pdf=COALESCE(NULLIF(?, ''), caminho_pdf), "
+                "plataforma=?, tipo_exame=?, atualizado_em=? WHERE numero_os=?",
+                (nome, cpf, data_exame, caminho_pdf, plataforma, tipo_exame,
+                 agora, numero_os),
+            )
+            return existente[0]
+        cur = conn.execute(
+            "INSERT INTO pacientes (nome, cpf, numero_os, data_exame, caminho_pdf, "
+            "plataforma, tipo_exame, status_envio, pronto_para_envio, "
+            "criado_em, atualizado_em) VALUES (?, ?, ?, ?, ?, ?, ?, 'pendente', 0, ?, ?)",
+            (nome, cpf, numero_os, data_exame, caminho_pdf, plataforma,
+             tipo_exame, agora, agora),
+        )
+        return cur.lastrowid
+
+
+def buscar_paciente_por_os(numero_os: str) -> sqlite3.Row | None:
+    """Compat: retorna o paciente pelo numero_os (ou None)."""
+    with get_conn() as conn:
+        return conn.execute(
+            "SELECT * FROM pacientes WHERE numero_os=?", (numero_os,)
+        ).fetchone()
+
+
+def salvar_telefone_por_os(numero_os: str, telefone: str) -> None:
+    """Compat: grava o telefone de um paciente pelo numero_os (sem liberar)."""
     agora = _agora()
     with get_conn() as conn:
         conn.execute(
-            "UPDATE pacientes SET status_envio='enviado', data_envio=?, "
-            "atualizado_em=? WHERE id=?",
-            (agora, agora, pid),
+            "UPDATE pacientes SET telefone=?, telefone_cadastrado=1, "
+            "telefone_cadastrado_em=?, atualizado_em=? WHERE numero_os=?",
+            (telefone, agora, agora, numero_os),
+        )
+
+
+def marcar_pronto_para_envio(numero_os: str, pronto: bool = True) -> None:
+    """Compat: libera (ou desfaz) o envio de um laudo pelo numero_os — gate."""
+    agora = _agora()
+    flag = 1 if pronto else 0
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE pacientes SET pronto_para_envio=?, "
+            "pronto_para_envio_em=CASE WHEN ?=1 THEN ? ELSE pronto_para_envio_em END, "
+            "atualizado_em=? WHERE numero_os=?",
+            (flag, flag, agora, agora, numero_os),
         )
