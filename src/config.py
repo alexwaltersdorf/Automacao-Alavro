@@ -39,7 +39,7 @@ OBRIGATORIAS = [
     "EVOLUTION_INSTANCE",
     "WEBAPP_USER",
     "WEBAPP_PASSWORD_HASH",
-    "SESSION_SECRET",
+    # SESSION_SECRET é validado à parte (aceita fallback WEBAPP_SECRET).
 ]
 
 
@@ -67,7 +67,25 @@ EVOLUTION_INSTANCE = os.environ["EVOLUTION_INSTANCE"]
 
 WEBAPP_USER = os.environ["WEBAPP_USER"]
 WEBAPP_PASSWORD_HASH = os.environ["WEBAPP_PASSWORD_HASH"].strip().lower()
-SESSION_SECRET = os.environ["SESSION_SECRET"]
+
+# Segredo de sessão: aceita o nome novo (SESSION_SECRET) OU o antigo do .env de
+# produção do Álvaro (WEBAPP_SECRET) — sem precisar editar o .env de produção.
+SESSION_SECRET = os.environ.get("SESSION_SECRET") or os.environ.get("WEBAPP_SECRET")
+if not SESSION_SECRET:
+    print(
+        "ERRO de configuração: defina SESSION_SECRET (ou WEBAPP_SECRET) no .env "
+        f"({ENV_PATH}).",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+# --- Variáveis do Álvaro (scrapers do vault) --------------------------------
+# Re-exportadas como nomes importáveis para `from src.config import ALVARO_*`.
+# OPCIONAIS: quem não usa o Álvaro não é bloqueado; ficam None se ausentes.
+ALVARO_BASE_URL = os.environ.get("ALVARO_BASE_URL")
+ALVARO_EMAIL = os.environ.get("ALVARO_EMAIL")
+ALVARO_SENHA = os.environ.get("ALVARO_SENHA")
+ALVARO_LAB_ID = os.environ.get("ALVARO_LAB_ID")
 
 # DRY_RUN: 1 (default) = simulação; 0 = envia de verdade.
 DRY_RUN = os.environ.get("DRY_RUN", "1").strip() not in ("0", "false", "False", "")
