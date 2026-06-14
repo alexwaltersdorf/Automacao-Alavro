@@ -14,9 +14,18 @@ services:
       - /opt/laudos-whatsapp/.env:/app/.env:ro
       - /opt/laudos-whatsapp/db:/opt/laudos-whatsapp/db:rw
       - /opt/laudos-whatsapp/pdfs:/opt/laudos-whatsapp/pdfs:rw
+    networks:
+      - traefik
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
       - "traefik.http.routers.laudos.entrypoints=websecure"
       - "traefik.http.routers.laudos.rule=Host(`resultado.totalquality.med.br`)"
       - "traefik.http.routers.laudos.tls.certresolver=letsencrypt"
       - "traefik.http.services.laudos.loadbalancer.server.port=8000"
+
+# Rede externa onde o Traefik já roda (do setup do Álvaro). Confira o nome com
+# `docker network ls` e ajuste se for diferente de "traefik".
+networks:
+  traefik:
+    external: true
