@@ -84,13 +84,25 @@ def listar(
     data: str | None = None,
     nome: str | None = None,
     cpf: str | None = None,
+    plataforma: str | None = None,
+    tipo_exame: str | None = None,
 ):
-    pacientes = db.listar_pacientes_cadastro(data=data, nome=nome, cpf=cpf)
+    pacientes = db.listar_pacientes_cadastro(
+        data=data, nome=nome, cpf=cpf, plataforma=plataforma, tipo_exame=tipo_exame
+    )
     return templates.TemplateResponse(
         request,
         "lista.html",
-        {"pacientes": pacientes, "data": data or "", "nome": nome or "",
-         "cpf": cpf or ""},
+        {
+            "pacientes": pacientes,
+            "data": data or "",
+            "nome": nome or "",
+            "cpf": cpf or "",
+            "plataforma": plataforma or "",
+            "tipo_exame": tipo_exame or "",
+            "plataformas": db.listar_plataformas(),
+            "tipos_exame": db.listar_tipos_exame(),
+        },
     )
 
 

@@ -7,11 +7,23 @@ via WhatsApp (Evolution API), com cron e monitoramento — sem expor PII.
 > **Princípio:** só o **coletor** muda por plataforma. Todo o resto é
 > reaproveitável. Para adicionar um portal use a skill `/novo-coletor-laudos`.
 
-## Plataformas
+## Arquitetura unificada
 
-| Slug | Portal | Método | CPF na listagem |
-|------|--------|--------|-----------------|
-| `neomed` | Neomed (app.neomed.tech) | Playwright | não (CPF opcional) |
+Um **único webapp**, **uma única base de dados** e **um domínio**
+(`resultado.totalquality.med.br`) atendem TODAS as plataformas. A tela de
+cadastro/gate lista pacientes de todas elas, com a coluna **Tipo de Exame** e
+filtros por plataforma e tipo. Só o **coletor** muda por plataforma; cada
+coletor grava `plataforma` + `tipo_exame` no laudo.
+
+| `plataforma` | Portal | Método | `tipo_exame` |
+|------|--------|--------|--------------|
+| `alvaro` | Álvaro Apoio | (já em produção) | `Laboratorial` |
+| `neomed` | Neomed (app.neomed.tech) | Playwright | `MAPA`, `Holter`, `Espirometria`, `Eletrocardiograma`, `Eletroencefalograma` |
+| `eden` | Eden (futuro) | a definir | `Raio-x`, `Tomografia`, `Mamografia` |
+
+> A migração de schema é **não-destrutiva** (`ALTER TABLE ADD COLUMN` idempotente):
+> registros legados do Álvaro recebem `plataforma='alvaro'` e
+> `tipo_exame='Laboratorial'` no backfill, sem recriar a tabela nem apagar dados.
 
 ## Estrutura
 

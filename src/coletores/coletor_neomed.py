@@ -44,6 +44,19 @@ ENV_HEADLESS = "NEOMED_HEADLESS"
 # Estados que indicam que o laudo NÃO está pronto para download/envio.
 ESTADOS_IGNORAR = ("reprocess", "recus")
 
+# Mapeamento do texto do exame (card Neomed) -> tipo_exame canônico.
+# A ordem importa: a primeira palavra-chave encontrada vence.
+MAPA_TIPO_EXAME = (
+    ("mapa", "MAPA"),
+    ("holter", "Holter"),
+    ("espiro", "Espirometria"),
+    ("eletroencefalo", "Eletroencefalograma"),
+    ("eeg", "Eletroencefalograma"),
+    ("eletrocardio", "Eletrocardiograma"),
+    ("ecg", "Eletrocardiograma"),
+)
+TIPO_EXAME_DESCONHECIDO = "Outro"
+
 # #OMV875961 | NOME DO PACIENTE
 RE_OS = re.compile(r"#\s*([A-Z0-9]+)")
 RE_DATA = re.compile(r"(\d{2}/\d{2}/\d{4})")
@@ -69,6 +82,15 @@ def _data_iso(texto: str) -> str:
     return f"{y}-{mth}-{d}"
 
 
+def _tipo_exame(texto: str) -> str:
+    """Deriva o tipo de exame a partir do texto do card (case-insensitive)."""
+    t = (texto or "").lower()
+    for chave, tipo in MAPA_TIPO_EXAME:
+        if chave in t:
+            return tipo
+    return TIPO_EXAME_DESCONHECIDO
+
+
 def _parse_card(texto: str) -> dict | None:
     """Extrai os metadados visíveis de um card de exame laudado."""
     estado = texto.lower()
@@ -90,7 +112,8 @@ def _parse_card(texto: str) -> dict | None:
         "nome": nome,
         "cpf": "",  # não disponível na listagem
         "data_exame": data_exame,
-        "portal": PORTAL,
+        "plataforma": PORTAL,
+        "tipo_exame": _tipo_exame(texto),
     }
 
 

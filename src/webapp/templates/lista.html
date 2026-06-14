@@ -26,6 +26,8 @@
     .b-pend { background:#fce4ec; color:#ad1457; }
     .b-ok { background:#e8f5e9; color:#2e7d32; }
     .b-lib { background:#e3f2fd; color:#1565c0; }
+    .b-plat { background:#ede7f6; color:#5e35b1; }
+    .b-tipo { background:#fff3e0; color:#e65100; }
     a.logout { color:#e91e63; text-decoration:none; font-size:.9rem; }
   </style>
 </head>
@@ -39,6 +41,18 @@
       <input type="date" name="data" value="{{ data }}">
       <input type="text" name="nome" placeholder="Nome" value="{{ nome }}">
       <input type="text" name="cpf" placeholder="CPF" value="{{ cpf }}">
+      <select name="plataforma">
+        <option value="">Todas as plataformas</option>
+        {% for pf in plataformas %}
+        <option value="{{ pf }}" {% if pf == plataforma %}selected{% endif %}>{{ pf }}</option>
+        {% endfor %}
+      </select>
+      <select name="tipo_exame">
+        <option value="">Todos os tipos de exame</option>
+        {% for te in tipos_exame %}
+        <option value="{{ te }}" {% if te == tipo_exame %}selected{% endif %}>{{ te }}</option>
+        {% endfor %}
+      </select>
       <button type="submit">Filtrar</button>
     </form>
 
@@ -47,7 +61,8 @@
       <div class="meta">
         OS <strong>{{ p["numero_os"] }}</strong>
         &middot; {{ p["nome"] }}
-        {% if p["portal"] %}&middot; {{ p["portal"] }}{% endif %}
+        {% if p["plataforma"] %}&middot; <span class="badge b-plat">{{ p["plataforma"] }}</span>{% endif %}
+        {% if p["tipo_exame"] %}&middot; <span class="badge b-tipo">{{ p["tipo_exame"] }}</span>{% endif %}
         &middot; {{ p["data_exame"] }}
         {% if p["status_envio"] == "enviado" %}
           <span class="badge b-ok">enviado</span>
