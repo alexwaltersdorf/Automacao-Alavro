@@ -47,8 +47,32 @@
   de `__pycache__`.
 - **Estado final:** `completion=100`, `errors=0`, `state=idle`.
 
-## 5. Pendência (aguardando decisão) — ⚠️ envio real
+## 5. Envio real (DRY_RUN) — ⚠️ ação irreversível
 
 - `DRY_RUN=0` em `/opt/laudos-whatsapp/.env` faz o **cron (07h UTC, Seg–Sex)**
-  enviar os **21 laudos liberados de verdade**.
-- **NÃO alterar** `DRY_RUN` sem autorização explícita.
+  enviar os laudos liberados **de verdade** (mensagens reais com PII).
+- **NÃO alterar** `DRY_RUN` sem autorização explícita do usuário.
+- **Decisão (2026-06-16):** envio real **autorizado** pelo usuário.
+
+### Procedimento de ativação segura
+
+1. **Pré-voo** — conferir a fila elegível (sem expor PII além do necessário):
+   ```bash
+   DB=/opt/laudos-whatsapp/db/laudos.db
+   sqlite3 "$DB" "SELECT COUNT(*) AS fila FROM pacientes
+     WHERE status_envio='pendente' AND pronto_para_envio=1
+       AND telefone!='' AND caminho_pdf!='';"
+   # telefones suspeitos (curtos) entre os liberados:
+   sqlite3 "$DB" "SELECT numero_os, length(telefone) FROM pacientes
+     WHERE status_envio='pendente' AND pronto_para_envio=1 AND length(telefone)<12;"
+   ```
+2. **Backup** do `.env` e do DB antes de mexer.
+3. **Ativar:** definir `DRY_RUN=0` em `/opt/laudos-whatsapp/.env`.
+4. **Disparo supervisionado** (preferir ao cron às cegas): rodar o worker
+   manualmente uma vez e observar `RESUMO_ENVIO`:
+   ```bash
+   /opt/laudos-whatsapp/app/run.sh -m src.enviar_laudos
+   ```
+   O `.env` é lido a cada execução do worker; o cron usará o novo valor
+   automaticamente. A webapp não envia, então não exige restart.
+5. Conferir status pós-envio: `SELECT status_envio, COUNT(*) ... GROUP BY 1`.
