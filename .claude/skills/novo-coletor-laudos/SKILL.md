@@ -58,6 +58,49 @@ da skill:
 
 ---
 
+## Ambiente de produção & sincronização (runbook)
+
+> Resumo operacional para qualquer trabalho de coletor/deploy. Fonte completa
+> versionada em `docs/RUNBOOK.md` (mantenha os dois em dia). **GitHub é a fonte
+> da verdade; o vault Syncthing é a cópia de execução.**
+
+**Infra:** Hostinger VPS (ID 1554023), Ubuntu 24.04, 3.8 GB RAM + 2 GB swap
+(`vm.swappiness=10`, persistido em `fstab`). Containers: `laudos-webapp-1`,
+Evolution API e Syncthing.
+
+**Caminhos na VPS:**
+- Código (vault, somente-leitura no container, montado em `/app/src`):
+  `/var/lib/docker/volumes/syncthing-dxoj_syncthing-data/_data/srv/obsidian-vault/OpenClaw/projetos/laudos-whatsapp`
+- `.env`: `/opt/laudos-whatsapp/.env` · DB: `/opt/laudos-whatsapp/db/laudos.db`
+  · PDFs: `/opt/laudos-whatsapp/pdfs/`
+- Syncthing: config em `_data/config/config.xml`, API em `localhost:32771`,
+  folder ID `2ms7r-wd97x`.
+
+**Fluxo de sincronização (OBRIGATÓRIO):**
+1. Toda mudança de código: **GitHub → branch → PR → merge** ANTES de chegar ao
+   vault/produção. Não edite direto no vault.
+2. **Nunca sincronizar** `.env`, DB, PDFs ou logs (segredos/LGPD). Reforça a
+   regra 3 acima.
+3. **Módulos que só existem no vault** (`scraper_alvaro.py`, `scraper_api.py`,
+   `status_laudos.py`) **não podem ser sobrescritos** no deploy enquanto não
+   forem trazidos para o repo. Ao mexer no `db.py`/`config.py`, preserve a
+   compatibilidade retroativa que esses módulos esperam.
+4. **Antes de recriar o container**, confirme o Syncthing **"Em sincronia"**
+   (`completion=100`, `state=idle`, `errors=0`) e **sem** arquivos
+   `.syncthing.*.tmp` pendentes.
+
+**Saúde do Syncthing (causa-raiz já tratada):** erros de `chmod`
+(`operation not permitted`) com `ignorePerms=false`. Correção aplicada:
+`ignorePerms=true` via API + rescan + `.stignore` (`__pycache__`, `*.pyc`,
+`*.pyo`, `.venv`, `*.tmp`, `*.bak-*`, etc.) + limpeza de `__pycache__`.
+
+**⚠️ DRY_RUN em produção:** o cron roda **07h UTC, Seg–Sex**. Com
+`DRY_RUN=0` em `/opt/laudos-whatsapp/.env` ele envia os laudos liberados **de
+verdade** (há ~21 laudos liberados na fila). **Nunca** alterar `DRY_RUN` sem
+autorização explícita do usuário (ver regra 6).
+
+---
+
 ## Passo 0 — Reconhecer o estado do projeto
 
 Verifique se a base reaproveitável já existe no repo (`src/db.py`,
@@ -201,6 +244,10 @@ sobre o arquivo (valide a sintaxe) antes de qualquer execução.
    usuário.
 4. Commit apenas de código/config (sem `.env`, sem PDFs, sem db, sem logs, sem
    PII) na branch de desenvolvimento; abra PR em draft.
+5. **Deploy via vault:** só depois do merge no GitHub. Antes de recriar o
+   container, confirme Syncthing "Em sincronia" (`completion=100`, `idle`,
+   `errors=0`, sem `.syncthing.*.tmp`) e **preserve** os módulos exclusivos do
+   vault (`scraper_alvaro.py`/`scraper_api.py`/`status_laudos.py`). Ver runbook.
 
 ---
 
@@ -216,3 +263,5 @@ sobre o arquivo (valide a sintaxe) antes de qualquer execução.
 - [ ] Contrato `coletar_laudos()` respeitado; PDFs em `PDF_DIR`
 - [ ] Núcleo reaproveitado sem alteração; gate humano preservado
 - [ ] `DRY_RUN=1` no desenvolvimento; envio real só com autorização
+- [ ] Fluxo GitHub→PR→merge→vault respeitado; Syncthing "Em sincronia" antes de recriar o container
+- [ ] Módulos exclusivos do vault preservados no deploy
