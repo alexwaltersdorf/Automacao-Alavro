@@ -97,6 +97,23 @@ LEGENDA_PADRAO = os.environ.get(
     "procure a unidade de atendimento.",
 )
 
+# Mensagem de avaliação Google enviada automaticamente após o PDF ser entregue.
+# Configurável por MENSAGEM_AVALIACAO no .env; padrão = texto oficial.
+MENSAGEM_AVALIACAO = os.environ.get(
+    "MENSAGEM_AVALIACAO",
+    "Olá! 😊\n\n"
+    "Esperamos que você tenha tido uma boa experiência com a Total Quality Medicina!\n\n"
+    "Sua opinião é muito importante para nós e nos ajuda a melhorar continuamente "
+    "os nossos serviços.\n\n"
+    "Você pode nos ajudar deixando uma avaliação no Google? "
+    "É rápido e faz toda a diferença! ⭐\n\n"
+    "👉 Clique no link abaixo para avaliar:\n"
+    "https://g.page/r/CQDVM2Z50SxfEAE/review\n\n"
+    "Agradecemos muito pelo seu tempo e confiança! ❤️\n\n"
+    "Total Quality,\n"
+    "Tempo e Vida. 🩺",
+)
+
 
 def senha_confere(senha: str) -> bool:
     """Compara a senha do login da webapp com o hash SHA-256 do .env."""

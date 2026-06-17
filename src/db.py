@@ -14,7 +14,8 @@ from src import config
 # Query da fila de envio — coração do gate humano. NÃO alterar a semântica:
 # só sai laudo com telefone preenchido, PDF existente e liberação manual.
 SQL_FILA_ENVIO = """
-SELECT id, nome, cpf, numero_os, data_exame, caminho_pdf, telefone
+SELECT id, nome, cpf, numero_os, data_exame, caminho_pdf, telefone,
+       COALESCE(avaliacao_enviada, 0) AS avaliacao_enviada
 FROM pacientes
 WHERE status_envio='pendente'
   AND pronto_para_envio=1
@@ -28,8 +29,9 @@ ORDER BY data_exame ASC, numero_os ASC
 # produção (Álvaro). ALTER TABLE ADD COLUMN é idempotente aqui porque
 # verificamos PRAGMA table_info antes. NUNCA recriamos a tabela.
 COLUNAS_NOVAS = {
-    "plataforma": "TEXT",   # 'alvaro' | 'neomed' | 'eden' | ...
-    "tipo_exame": "TEXT",   # 'Laboratorial' | 'MAPA' | 'Holter' | ...
+    "plataforma": "TEXT",          # 'alvaro' | 'neomed' | 'eden' | ...
+    "tipo_exame": "TEXT",          # 'Laboratorial' | 'MAPA' | 'Holter' | ...
+    "avaliacao_enviada": "INTEGER NOT NULL DEFAULT 0",  # 1 após envio confirmado
 }
 
 # Defaults seguros para os registros legados do Álvaro (já em produção).
@@ -338,6 +340,15 @@ def marcar_enviado(paciente_id: int, sucesso: bool = True) -> None:
             "data_envio=CASE WHEN ?='enviado' THEN ? ELSE data_envio END, "
             "atualizado_em=? WHERE id=?",
             (status, status, agora, agora, paciente_id),
+        )
+
+
+def marcar_avaliacao_enviada(paciente_id: int) -> None:
+    """Marca que a mensagem de avaliação foi enviada com sucesso para este paciente."""
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE pacientes SET avaliacao_enviada=1, atualizado_em=? WHERE id=?",
+            (_agora(), paciente_id),
         )
 
 

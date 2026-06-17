@@ -68,3 +68,39 @@ def enviar_documento_pdf(
         _mascarar_tel(telefone),
     )
     return False
+
+
+def enviar_texto(
+    telefone: str,
+    texto: str,
+    instancia: str | None = None,
+    timeout: float = 30.0,
+) -> bool:
+    """Envia uma mensagem de texto ao paciente via Evolution API.
+
+    Retorna True se a Evolution responder 201. Não decide DRY_RUN — o worker
+    é quem controla (igual a enviar_documento_pdf).
+    """
+    instancia = instancia or config.EVOLUTION_INSTANCE
+    url = f"{config.EVOLUTION_BASE_URL}/message/sendText/{instancia}"
+    payload = {"number": telefone, "text": texto}
+    headers = {"apikey": config.EVOLUTION_API_KEY, "Content-Type": "application/json"}
+
+    try:
+        resp = httpx.post(url, json=payload, headers=headers, timeout=timeout)
+    except httpx.HTTPError as exc:
+        log.error(
+            "Falha de rede ao enviar texto para %s: %s", _mascarar_tel(telefone), exc
+        )
+        return False
+
+    if resp.status_code == 201:
+        log.info("Texto enviado com sucesso para %s", _mascarar_tel(telefone))
+        return True
+
+    log.error(
+        "Evolution retornou %s ao enviar texto para %s",
+        resp.status_code,
+        _mascarar_tel(telefone),
+    )
+    return False
