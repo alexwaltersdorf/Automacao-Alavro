@@ -1,12 +1,18 @@
 """Worker de envio (cron). Monta a fila elegível e envia via Evolution API.
 
 Reaproveitável por todas as plataformas. Loga uma linha RESUMO_ENVIO com
-total/enviados/erros/dry_run. Nunca loga PII de paciente.
+total/processados/enviados/erros/avaliacoes/limite/dry_run. Nunca loga PII.
+
+Canário (envio controlado): aceita um limite de laudos por rodada via
+--limit N (CLI) ou LIMITE_ENVIO=N (env). Quando >0, processa no máximo N
+laudos da fila liberada e para; quando ausente/0, processa toda a fila.
 """
 
 from __future__ import annotations
 
+import argparse
 import logging
+import os
 
 from src import config, db
 from src.whatsapp_evolution import enviar_documento_pdf, enviar_texto
@@ -18,14 +24,47 @@ def _mascarar_nome(nome: str) -> str:
     return (nome[:1] + "***") if nome else "***"
 
 
-def processar_fila() -> dict:
+def _resolver_limite(arg_limite: int | None) -> int:
+    """Resolve o limite do canário: --limit (CLI) tem precedência sobre
+    LIMITE_ENVIO (env). Valor ausente/inválido/<=0 => 0 (sem limite)."""
+    if arg_limite is not None:
+        return arg_limite if arg_limite > 0 else 0
+    bruto = os.environ.get("LIMITE_ENVIO", "").strip()
+    if not bruto:
+        return 0
+    try:
+        valor = int(bruto)
+    except ValueError:
+        log.warning("LIMITE_ENVIO inválido (%r); ignorando (sem limite)", bruto)
+        return 0
+    return valor if valor > 0 else 0
+
+
+def processar_fila(limite: int | None = None) -> dict:
+    """Processa a fila liberada. Se `limite` > 0, processa no máximo `limite`
+    laudos (canário) — conta laudos efetivamente processados (tentativa de
+    envio do PDF), não a fila inteira. Em DRY_RUN respeita o limite e só simula.
+    """
+    limite = limite or 0
     db.init_db()
     fila = db.listar_pendentes_envio()
     total = len(fila)
-    enviados = erros = avaliacoes = 0
+    enviados = erros = avaliacoes = processados = 0
+
+    if limite > 0:
+        log.info(
+            "[CANARIO] limite=%d: processando no máximo %d laudo(s) de %d na fila",
+            limite,
+            limite,
+            total,
+        )
 
     for row in fila:
+        if limite > 0 and processados >= limite:
+            log.info("[CANARIO] limite=%d atingido; parando a rodada", limite)
+            break
         os_ = row["numero_os"]
+        processados += 1
         try:
             if config.DRY_RUN:
                 log.info(
@@ -70,18 +109,23 @@ def processar_fila() -> dict:
             log.exception("Erro ao processar os=%s", os_)
 
     log.info(
-        "RESUMO_ENVIO total=%d enviados=%d erros=%d avaliacoes=%d dry_run=%d",
+        "RESUMO_ENVIO total=%d processados=%d enviados=%d erros=%d "
+        "avaliacoes=%d limite=%d dry_run=%d",
         total,
+        processados,
         enviados,
         erros,
         avaliacoes,
+        limite,
         1 if config.DRY_RUN else 0,
     )
     return {
         "total": total,
+        "processados": processados,
         "enviados": enviados,
         "erros": erros,
         "avaliacoes": avaliacoes,
+        "limite": limite,
         "dry_run": config.DRY_RUN,
     }
 
@@ -90,4 +134,15 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s"
     )
-    processar_fila()
+    parser = argparse.ArgumentParser(
+        description="Worker de envio de laudos (com canário opcional)."
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Canário: processa no máximo N laudos por rodada (>0). "
+        "Sobrepõe LIMITE_ENVIO. Ausente/0 => processa toda a fila.",
+    )
+    args = parser.parse_args()
+    processar_fila(limite=_resolver_limite(args.limit))
