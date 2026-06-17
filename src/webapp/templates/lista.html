@@ -28,6 +28,7 @@
     .b-lib { background:#e3f2fd; color:#1565c0; }
     .b-plat { background:#ede7f6; color:#5e35b1; }
     .b-tipo { background:#fff3e0; color:#e65100; }
+    .b-sug { background:#e0f2f1; color:#00695c; }
     a.logout { color:#e91e63; text-decoration:none; font-size:.9rem; }
   </style>
 </head>
@@ -73,8 +74,11 @@
         {% endif %}
       </div>
       <form class="row" method="post" action="/paciente/{{ p['id'] }}/telefone">
+        {% set sugestao = sugestoes.get(p['id']) %}
         <input type="text" name="telefone" placeholder="Telefone (DDD+número)"
-               value="{{ p['telefone'] or '' }}" inputmode="numeric">
+               value="{{ p['telefone'] or sugestao or '' }}" inputmode="numeric"
+               {% if sugestao and not p['telefone'] %}title="Sugerido pela agenda (CPF) — clique Salvar para confirmar"{% endif %}>
+        {% if sugestao and not p['telefone'] %}<span class="badge b-sug">agenda</span>{% endif %}
         <label><input type="checkbox" name="liberar" value="1"
                {% if p["pronto_para_envio"] %}checked{% endif %}> liberar envio</label>
         <button type="submit">Salvar</button>

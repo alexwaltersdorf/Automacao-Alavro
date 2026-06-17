@@ -90,11 +90,20 @@ def listar(
     pacientes = db.listar_pacientes_cadastro(
         data=data, nome=nome, cpf=cpf, plataforma=plataforma, tipo_exame=tipo_exame
     )
+    # Sugestão da agenda por CPF para linhas ainda sem telefone (apenas exibe;
+    # só persiste quando o operador clica Salvar — gate inalterado).
+    sugestoes: dict[int, str] = {}
+    for p in pacientes:
+        if not (p["telefone"] or "").strip() and (p["cpf"] or "").strip():
+            tel = db.buscar_contato(p["cpf"])
+            if tel:
+                sugestoes[p["id"]] = tel
     return templates.TemplateResponse(
         request,
         "lista.html",
         {
             "pacientes": pacientes,
+            "sugestoes": sugestoes,
             "data": data or "",
             "nome": nome or "",
             "cpf": cpf or "",
@@ -110,4 +119,8 @@ def listar(
 def cadastrar(pid: int, telefone: str = Form(...), liberar: str | None = Form(None)):
     telefone = "".join(ch for ch in telefone if ch.isdigit())
     db.cadastrar_telefone(pid, telefone, liberar is not None)
+    # Alimenta a agenda por CPF para reaproveitar o telefone em futuras OS.
+    paciente = db.get_paciente(pid)
+    if paciente and telefone and (paciente["cpf"] or "").strip():
+        db.upsert_contato(paciente["cpf"], telefone)
     return RedirectResponse("/", status_code=303)
