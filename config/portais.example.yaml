@@ -1,0 +1,25 @@
+# Config de portais (SEM segredos). Valores secretos ficam no .env.
+# Copie para config/portais.yaml (gitignored) se quiser uma cópia real.
+estabelecimentos:
+  - unidade: "Total Quality"
+    # Instância do Evolution compartilhada pela unidade (EVOLUTION_INSTANCE no .env).
+    portais:
+      - slug: neomed
+        descricao: "Neomed"
+        url: "https://app.neomed.tech/sign-in"
+        metodo: playwright          # não há API oficial conhecida
+        pre_auth:
+          tipo: nenhum              # login direto: e-mail + senha
+        env:
+          user: NEOMED_USER
+          password: NEOMED_PASSWORD
+          url: NEOMED_URL
+        metadados:
+          fonte: tela
+          nome: "card: texto após '#OS | <NOME>'"
+          cpf: "indisponível na listagem -> vazio (opcional)"
+          data_exame: "card: 'Envio de exame: dd/mm/aaaa hh:mm'"
+          numero_os: "card: código após '#', ex. OMV875961"
+        download:
+          tipo: direto              # menu 3 pontos -> Baixar (download de PDF)
+          observacao: "ignorar cards 'reprocessado'/'recusado'"

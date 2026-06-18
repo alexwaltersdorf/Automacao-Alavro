@@ -1,0 +1,31 @@
+# Webapp containerizada e exposta via Traefik + Let's Encrypt.
+# Ajuste o Host(...) para o domínio da unidade antes do deploy.
+services:
+  webapp:
+    build: .
+    image: laudos-webapp
+    restart: unless-stopped
+    # Grupo dedicado para leitura do .env (lição do Álvaro: appuser precisa
+    # conseguir ler o .env 640 root:laudosenv). GID 1001 = laudosenv.
+    group_add:
+      - "1001"
+    volumes:
+      - ./src:/app/src:ro
+      - /opt/laudos-whatsapp/.env:/app/.env:ro
+      - /opt/laudos-whatsapp/db:/opt/laudos-whatsapp/db:rw
+      - /opt/laudos-whatsapp/pdfs:/opt/laudos-whatsapp/pdfs:rw
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.laudos.entrypoints=websecure"
+      - "traefik.http.routers.laudos.rule=Host(`resultado.totalquality.med.br`)"
+      - "traefik.http.routers.laudos.tls.certresolver=letsencrypt"
+      - "traefik.http.services.laudos.loadbalancer.server.port=8000"
+
+# Rede externa onde o Traefik já roda (do setup do Álvaro). Confira o nome com
+# `docker network ls` e ajuste se for diferente de "traefik".
+networks:
+  traefik:
+    external: true

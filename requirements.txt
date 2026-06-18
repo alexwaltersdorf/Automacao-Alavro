@@ -1,0 +1,13 @@
+# Núcleo da webapp
+fastapi
+uvicorn[standard]
+jinja2
+itsdangerous
+python-multipart
+# Integração / config
+httpx
+python-dotenv
+# Coleta / PDFs
+playwright
+pdfplumber
+pypdf
