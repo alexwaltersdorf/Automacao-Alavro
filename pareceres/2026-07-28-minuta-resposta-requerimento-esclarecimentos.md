@@ -6,8 +6,8 @@
 
 ## CHECKLIST PRÉVIO (obrigatório antes do envio)
 
-- [ ] Confirmar com a banca a **denominação exata e a edição** dos instrumentos aplicados (o requerimento grafa "TEACO‑2" e "TEPIE‑MZ").
-- [ ] Juntar **consulta ao SATEPSI/CFP** comprovando parecer favorável vigente em **21/06/2026** para cada instrumento (print datado).
+- [x] **Confirmado:** os instrumentos aplicados foram o **TEACO‑2** (Teste de Atenção Concentrada‑2) e o **TEPIC‑M‑2** (Teste Pictórico de Memória‑2). A grafia "TEPIE‑MZ" do requerimento decorre de equívoco de transcrição — corrigir na resposta, sem censura à requerente.
+- [ ] Juntar **consulta ao SATEPSI/CFP** (print datado) comprovando parecer **favorável** vigente em **21/06/2026** para o TEACO‑2 e para o TEPIC‑M‑2.
 - [ ] Juntar **ato de designação e qualificação da equipe** (nomes, CRM/CRP, áreas de atuação) — mínimo de 3 profissionais, de áreas distintas, um da medicina.
 - [ ] Obter **declaração técnica da banca** quanto ao caráter auxiliar, não eliminatório e não classificatório dos instrumentos, e quanto à natureza colegiada da conclusão.
 - [ ] Confirmar que o **protocolo foi padronizado** para todos os candidatos submetidos à Avaliação Biopsicossocial.
@@ -58,10 +58,12 @@ Esse comando é expressamente incorporado ao regime dos concursos públicos pelo
 
 A escolha do instrumento específico é **ato técnico privativo do profissional de Psicologia**, vinculado ao construto a ser mensurado e ao status do teste no SATEPSI na data da aplicação. Sua enumeração prévia em edital não é exigida pela legislação e, ademais, comprometeria a validade dos instrumentos, que pressupõem desconhecimento prévio do conteúdo pelo avaliado.
 
-**Fundamento técnico.** Os instrumentos aplicados são testes psicológicos padronizados, com normas brasileiras e **parecer favorável vigente no SATEPSI**, conforme documentação anexa:
+**Fundamento técnico.** Esclarece-se, preliminarmente, que os instrumentos aplicados foram o **TEACO‑2** e o **TEPIC‑M‑2** — este último referido no requerimento como "TEPIE‑MZ". Ambos são testes psicológicos padronizados, com normas brasileiras e **parecer favorável vigente no SATEPSI**, conforme documentação anexa:
 
-- **[TEACO — Teste de Atenção Concentrada, edição ___]** — avalia **atenção concentrada**, correspondente aos códigos **b140** (funções da atenção) e **d160** (concentrar a atenção) da Classificação Internacional de Funcionalidade, Incapacidade e Saúde (CIF/OMS);
-- **[TEPIC‑M‑2 — Teste Pictórico de Memória]** — avalia **memória visual de curto prazo**, correspondente aos códigos **b144** (funções da memória) e **b164** (funções cognitivas superiores) da CIF.
+- **TEACO‑2 — Teste de Atenção Concentrada‑2** — avalia **atenção concentrada**, correspondente aos códigos **b140** (funções da atenção) e **d160** (concentrar a atenção) da Classificação Internacional de Funcionalidade, Incapacidade e Saúde (CIF/OMS). Parecer favorável no SATEPSI, com normatização válida até **18/11/2037**;
+- **TEPIC‑M‑2 — Teste Pictórico de Memória‑2** — avalia **memória visual de curto prazo**, correspondente aos códigos **b144** (funções da memória) e **b164** (funções cognitivas superiores) da CIF. Parecer favorável no SATEPSI, com tabelas normativas construídas a partir de mais de 15 mil participantes das cinco regiões do Brasil.
+
+Registre-se que ambos os instrumentos correspondem às **edições vigentes e renormatizadas**. A versão anterior do Teste Pictórico de Memória (TEPIC‑M, 2007) encontra-se com parecer desfavorável no SATEPSI desde 03/08/2022, por vencimento dos estudos de normatização, e **não foi utilizada nesta avaliação**. A seleção dos instrumentos observou, portanto, rigorosamente o disposto na Resolução CFP nº 31/2022, que veda ao psicólogo a utilização de testes com parecer desfavorável ou não avaliados.
 
 Registre-se que os domínios aferidos por esses instrumentos integram o **Índice de Funcionalidade Brasileiro Modificado (IFBrM)** — instrumento nacional de referência da avaliação biopsicossocial da deficiência, consolidado no âmbito do Grupo de Trabalho Interministerial instituído pelo Decreto nº 11.487/2023 —, que avalia, no domínio "Aprendizagem e aplicação do conhecimento", a atividade **d160 — "concentrar intencionalmente a atenção em estímulos específicos, desligando-se dos fatores que distraem"**, entre outras atividades de leitura, escrita e resolução de problemas.
 
@@ -176,7 +178,7 @@ Atenciosamente,
 
 | Instrumento | Construto | CIF — Funções do corpo | CIF — Atividades e Participação | Fundamento legal |
 |---|---|---|---|---|
-| TEACO — Teste de Atenção Concentrada | Atenção concentrada | b140 (b1400, b1401, b1402) | d160, d210, d220, d240 | LBI art. 2º, §1º, I, II e III; Dec. 9.508/2018 art. 5º, §2º, II e V |
-| TEPIC‑M‑2 — Teste Pictórico de Memória | Memória visual de curto prazo | b144 (b1440, b1442), b164 | d155, d166, d170, d175, d177 | LBI art. 2º, §1º, I, II e III; Dec. 9.508/2018 art. 5º, §2º, II e V |
+| TEACO‑2 — Teste de Atenção Concentrada‑2 | Atenção concentrada | b140 (b1400, b1401, b1402) | d160, d210, d220, d240 | LBI art. 2º, §1º, I, II e III; Dec. 9.508/2018 art. 5º, §2º, II e V |
+| TEPIC‑M‑2 — Teste Pictórico de Memória‑2 | Memória visual de curto prazo | b144 (b1440, b1442), b164 | d155, d166, d170, d175, d177 | LBI art. 2º, §1º, I, II e III; Dec. 9.508/2018 art. 5º, §2º, II e V |
 
 **Correspondência com o instrumento nacional de referência (IFBrM):** domínios "Aprendizagem e aplicação do conhecimento" (inclui d160) e "Tarefas e demandas gerais".

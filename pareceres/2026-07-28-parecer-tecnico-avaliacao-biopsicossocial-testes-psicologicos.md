@@ -29,13 +29,13 @@ Este parecer adota as seguintes premissas, que devem ser confirmadas documentalm
 | # | Premissa | Onde confirmar |
 |---|---|---|
 | P1 | A avaliação foi realizada por equipe multiprofissional e interdisciplinar com, no mínimo, 3 profissionais de áreas distintas, um deles médico | Ata da equipe; termos de designação; registros CRM/CRP |
-| P2 | Os instrumentos aplicados possuem parecer **favorável** vigente no SATEPSI na data da aplicação (21/06/2026) | Consulta ao SATEPSI/CFP com print datado |
+| P2 | Os instrumentos aplicados possuem parecer **favorável** vigente no SATEPSI na data da aplicação (21/06/2026) | **Confirmado** — ver item 4.1. Juntar print datado da consulta ao SATEPSI/CFP |
 | P3 | A aplicação, correção e interpretação seguiram estritamente o manual técnico aprovado | Registro da psicóloga responsável |
 | P4 | Os instrumentos foram aplicados **a todos os candidatos submetidos à Avaliação Biopsicossocial**, de forma padronizada | Protocolo da banca / registros de aplicação |
 | P5 | Os resultados dos testes constituíram **elemento auxiliar** de caracterização da funcionalidade, e **não critério autônomo, eliminatório ou classificatório** de aptidão | Parecer conclusivo da equipe |
 | P6 | A conclusão foi **colegiada**, e não decorrente isoladamente do componente psicológico | Ata/parecer assinado por todos |
 
-> **Advertência técnica relevante:** as premissas P2, P3 e P5 são determinantes. Caso qualquer delas não se confirme — em especial se algum instrumento estivesse com status desfavorável ou não avaliado no SATEPSI, ou se o resultado dos testes tivesse sido empregado como nota de corte / critério autônomo de aptidão —, a conclusão deste parecer se altera substancialmente e haveria vício a sanar. A defesa técnica que se segue é sólida **na medida em que essas premissas sejam documentalmente demonstráveis**.
+> **Advertência técnica relevante:** a premissa **P2 está confirmada** (item 4.1): tanto o **TEACO‑2** quanto o **TEPIC‑M‑2** constam do SATEPSI com **parecer favorável**. As premissas **P1, P3, P5 e P6** permanecem determinantes: caso o resultado dos testes tivesse sido empregado como nota de corte ou critério autônomo de aptidão, ou caso a composição da equipe não atenda ao art. 5º, *caput*, do Decreto nº 9.508/2018, a conclusão deste parecer se altera e haveria vício a sanar. A defesa técnica que se segue é sólida **na medida em que essas premissas sejam documentalmente demonstráveis**.
 
 ---
 
@@ -122,18 +122,24 @@ Este é o ponto que, ainda que não formulado expressamente, subjaz ao requerime
 
 ## 4. ANÁLISE TÉCNICA DOS INSTRUMENTOS APLICADOS
 
-### 4.1 Identificação dos instrumentos
+### 4.1 Identificação dos instrumentos e situação no SATEPSI
 
-A candidata refere os instrumentos como "TEACO‑2" e "TEPIE‑MZ". Tecnicamente, correspondem a:
+Os instrumentos efetivamente aplicados foram o **TEACO‑2** e o **TEPIC‑M‑2** (este último grafado no requerimento como "TEPIE‑MZ", por evidente equívoco de transcrição):
 
-| Sigla no requerimento | Instrumento | Construto avaliado | Aplicação |
-|---|---|---|---|
-| **TEACO‑2** | **TEACO — Teste de Atenção Concentrada** (versão atual, 2ª/3ª edição; autores Fabián Javier Marín Rueda e Fermino Fernandes Sisto) | **Atenção concentrada** — capacidade de selecionar uma única fonte de informação diante de estímulos distratores, em tempo determinado | Individual ou coletiva; ~4 min de tarefa, ~10 min no total |
-| **TEPIE‑MZ** (provável transcrição de **TEPIC‑M‑2**) | **TEPIC‑M‑2 — Teste Pictórico de Memória** | **Memória visual de curto prazo** — recuperação de informação visual (substantivos concretos) em curto intervalo | Individual ou coletiva; ~5 min no total; normas com mais de 15 mil participantes das cinco regiões do Brasil |
+| Instrumento | Denominação completa | Construto avaliado | Situação no SATEPSI | Aplicação |
+|---|---|---|---|---|
+| **TEACO‑2** | Teste de Atenção Concentrada‑2 (Fabián Javier Marín Rueda e Fermino Fernandes Sisto) | **Atenção concentrada** — capacidade de selecionar uma única fonte de informação diante de estímulos distratores, em tempo determinado | **Parecer FAVORÁVEL.** Normatização válida até **18/11/2037** | Individual ou coletiva; ~4 min de tarefa, ~10 min no total |
+| **TEPIC‑M‑2** | Teste Pictórico de Memória‑2 (Vetor Editora) | **Memória visual de curto prazo** — codificação, retenção e recuperação de informação visual (substantivos concretos) em curto intervalo | **Parecer FAVORÁVEL.** Normas com mais de 15 mil participantes das cinco regiões do Brasil; faixa etária 15–92 anos | Individual ou coletiva; ~5 min no total |
 
-**Recomendação:** a Administração deve confirmar junto à banca a **denominação exata, a edição e o status no SATEPSI na data da aplicação**, e juntar o comprovante de consulta ao processo. A resposta oficial não deve reproduzir a sigla tal como grafada no requerimento sem essa conferência.
+**Ponto que reforça a regularidade do procedimento — e não deve ser omitido da resposta oficial:**
 
-Ambos os instrumentos são de aplicação breve, coletiva ou individual, **não invasivos**, e **integralmente compatíveis com a condição de usuária de cadeira de rodas**, não demandando mobilidade de membros inferiores nem transferência postural.
+O **TEPIC‑M** (versão original, 2007) encontra‑se com **parecer DESFAVORÁVEL desde 03/08/2022**, por estudos de normatização vencidos. Nos termos da **Resolução CFP nº 31/2022**, o uso de instrumento com parecer desfavorável configuraria **falta ética**.
+
+A banca aplicou a **versão vigente e renormatizada (TEPIC‑M‑2)** — e não a versão superada. O mesmo se verifica quanto ao **TEACO‑2**, edição atual, com normatização válida por mais de uma década.
+
+Ou seja: a escolha dos instrumentos **demonstra positivamente a observância da Resolução CFP nº 31/2022** e o cuidado técnico da profissional responsável na seleção de instrumentos atualizados. Este é um argumento afirmativo — não meramente defensivo — e deve constar expressamente da resposta, acompanhado do comprovante datado de consulta ao SATEPSI.
+
+Ambos os instrumentos são de aplicação breve, coletiva ou individual, **não invasivos**, e **integralmente compatíveis com a condição de usuária de cadeira de rodas**, não demandando mobilidade de membros inferiores, destreza fina de membros inferiores nem transferência postural.
 
 ### 4.2 Matriz de correlação instrumento × domínio legal × código CIF
 
@@ -266,8 +272,8 @@ Dentro do universo dos candidatos submetidos à Avaliação Biopsicossocial, con
 
 **Antes de responder:**
 
-1. **Confirmar junto à banca a denominação exata e a edição dos instrumentos**, e juntar ao processo a consulta ao SATEPSI comprovando **status favorável na data de 21/06/2026**. Este é o item de maior risco e de verificação mais simples.
-2. **Juntar a documentação de composição da equipe** (designação, CRM/CRP, áreas de atuação), demonstrando o atendimento ao art. 5º, caput, do Decreto nº 9.508/2018.
+1. **Juntar ao processo a consulta ao SATEPSI** (print datado) comprovando o parecer favorável do **TEACO‑2** e do **TEPIC‑M‑2** em 21/06/2026, e **explicitar na resposta** que a banca utilizou as edições vigentes e renormatizadas — e não o TEPIC‑M original, desfavorável desde 03/08/2022. Argumento afirmativo de observância da Resolução CFP nº 31/2022.
+2. **Juntar a documentação de composição da equipe** (designação, CRM/CRP, áreas de atuação), demonstrando o atendimento ao art. 5º, caput, do Decreto nº 9.508/2018. **Este passou a ser o principal ponto de atenção do procedimento**, dado que a requerente relata atendimento por apenas dois profissionais.
 3. **Obter da banca declaração técnica formal** de que os testes tiveram caráter auxiliar, sem função eliminatória ou classificatória autônoma, e de que a conclusão foi colegiada.
 4. **Confirmar a padronização do protocolo** para todos os candidatos submetidos à Avaliação Biopsicossocial.
 
@@ -294,9 +300,9 @@ Dentro do universo dos candidatos submetidos à Avaliação Biopsicossocial, con
 ## 8. RESSALVAS
 
 - Este parecer é elaborado com base nos elementos constantes do requerimento da candidata e no marco normativo vigente em 28/07/2026, **sem acesso aos autos do processo administrativo, ao inteiro teor do edital, ao parecer da equipe ou aos protocolos de aplicação**.
-- A conclusão pela regularidade do procedimento é **condicionada à confirmação documental das premissas P1 a P6** (item 2). Não confirmada qualquer delas — em especial o status SATEPSI dos instrumentos e o caráter não eliminatório dos resultados —, o juízo deve ser revisto.
+- A premissa **P2 está confirmada**: TEACO‑2 e TEPIC‑M‑2 constam do SATEPSI com parecer favorável. A conclusão pela regularidade do procedimento permanece **condicionada à confirmação documental das premissas P1, P3, P4, P5 e P6** (item 2) — em especial a composição da equipe e o caráter não eliminatório dos resultados.
 - A transcrição literal dos dispositivos normativos citados deve ser conferida na fonte oficial (Planalto/DOU) antes da incorporação à resposta administrativa.
-- A denominação "TEPIE‑MZ", tal como grafada no requerimento, não corresponde a instrumento registrado com essa sigla; a correspondência com o **TEPIC‑M‑2 (Teste Pictórico de Memória)** é a mais provável, mas **deve ser confirmada** junto à psicóloga responsável antes de constar da resposta oficial.
+- As datas e o status dos instrumentos no SATEPSI aqui indicados foram obtidos por consulta em 28/07/2026 e devem ser reconfirmados, com print datado, para instrução do processo. A grafia "TEPIE‑MZ" constante do requerimento não corresponde a instrumento registrado; o instrumento efetivamente aplicado foi o **TEPIC‑M‑2**, conforme informado pela banca. A resposta oficial deve corrigir a denominação, sem atribuir à requerente qualquer censura pelo equívoco de transcrição.
 - A análise de aspectos estritamente processuais e de estratégia jurídico-contenciosa é atribuição da Procuradoria/Assessoria Jurídica da Câmara Municipal, a quem se recomenda submeter este parecer.
 
 ---
@@ -333,7 +339,7 @@ Dentro do universo dos candidatos submetidos à Avaliação Biopsicossocial, con
 - OMS — Classificação Internacional de Funcionalidade, Incapacidade e Saúde (CIF), 2001
 - IFBrM — Índice de Funcionalidade Brasileiro Modificado
 - SATEPSI/CFP — Sistema de Avaliação de Testes Psicológicos
-- Manuais técnicos do TEACO (Teste de Atenção Concentrada) e do TEPIC‑M‑2 (Teste Pictórico de Memória)
+- Manuais técnicos do TEACO‑2 (Teste de Atenção Concentrada‑2) e do TEPIC‑M‑2 (Teste Pictórico de Memória‑2)
 
 ---
 
