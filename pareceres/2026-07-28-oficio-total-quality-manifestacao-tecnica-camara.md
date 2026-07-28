@@ -226,24 +226,23 @@ Atenciosamente,
 <br>
 
 _______________________________________
-**[Nome completo]**
-Responsável Técnico — Médico
-CRM/SP nº [_____]
+**Dr. Lucas Duarte José Maria**
+Médico Neurologista — Responsável Técnico
+CRM‑SP 235.344 / RQE 51101
 
 <br>
 
 _______________________________________
-**[Nome completo]**
+**Aparecida de Fátima Camillo**
 Psicóloga responsável pela avaliação psicológica
-CRP/[__] nº [_____]
+CRP 06/32540
 
 <br>
 
 _______________________________________
-**ALEX WALTERSDORF**
-Sócio Administrador
-**Clínica Total Quality — Diagnóstico por Imagem e Análises Clínicas Ltda.**
-CNPJ nº 47.513.472/0001‑01
+**Alex Waltersdorf**
+Sócio Administrador — Clínica Total Quality
+Enfermeiro — COREN‑SP 267.339
 
 ---
 
