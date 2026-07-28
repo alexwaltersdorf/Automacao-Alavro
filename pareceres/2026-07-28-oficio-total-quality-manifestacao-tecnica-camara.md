@@ -73,10 +73,15 @@ Verifica-se, portanto, que a participação de profissional de Psicologia na jun
 A avaliação da candidata compreendeu, nesses termos:
 
 1. **Análise da documentação médica** apresentada pela candidata;
-2. **Anamnese e exame clínico** conduzidos por médico integrante da junta;
+2. **Anamnese e exame clínico** conduzidos por médico neurologista integrante da junta;
 3. **Entrevista e avaliação psicológica** conduzidas por psicóloga integrante da junta, com utilização de instrumentos padronizados;
-4. **Análise das atribuições e tarefas essenciais do cargo** de Oficial Legislativo, à luz das informações fornecidas pela Administração, nos termos do art. 5º, §1º, do Decreto nº 9.508/2018;
-5. **Deliberação colegiada** da junta multiprofissional e interdisciplinar e emissão de parecer conclusivo.
+4. **Avaliação clínica complementar** conduzida por enfermeiro integrante da junta;
+5. **Análise das atribuições e tarefas essenciais do cargo** de Oficial Legislativo, à luz das informações fornecidas pela Administração, nos termos do art. 5º, §1º, do Decreto nº 9.508/2018;
+6. **Deliberação colegiada** da junta multiprofissional e interdisciplinar e emissão de parecer conclusivo.
+
+Cumpre destacar que a deliberação **não se deu por manifestações isoladas e estanques**. Os integrantes atuaram de forma interdisciplinar e articulada, mediante **interconsulta recíproca**: a psicóloga consultou o médico neurologista quanto ao quadro neurológico da candidata e suas eventuais repercussões sobre as funções mentais, e o médico neurologista consultou a psicóloga quanto aos achados relativos aos domínios de atenção e memória, integrando-os à caracterização do impedimento e ao juízo de compatibilidade funcional. O enfermeiro integrou a junta deliberativa e apresentou os dados da avaliação clínica complementar.
+
+Essa dinâmica encontra-se formalmente registrada na **Ata de Deliberação da Junta Multiprofissional e Interdisciplinar** e consolidada no **Parecer Conclusivo Colegiado**, documentos que acompanham este ofício.
 
 O protocolo foi **idêntico para todos os candidatos submetidos à Avaliação Biopsicossocial**, em cumprimento ao dever de uniformidade metodológica previsto nos itens 2.4.7 e 5.4 — providência que assegura isonomia e previne juízos presuntivos ou vieses de avaliação.
 
@@ -148,6 +153,8 @@ Esclarece-se que:
 
 No caso concreto da requerente, [**PREENCHER com a leitura efetiva dos resultados — p. ex.:** *os resultados obtidos situaram-se dentro dos parâmetros normativos de referência dos respectivos manuais técnicos, corroborando a preservação dos domínios de atenção concentrada e memória visual de curto prazo e fundamentando, ao lado dos demais elementos, o reconhecimento da compatibilidade entre a deficiência e as atribuições do cargo de Oficial Legislativo*].
 
+**Esclarecimento terminológico.** A expressão *"APTA para a Função"*, constante do Atestado Psicossocial de 24/06/2026, traduz, **em substância**, o juízo de **compatibilidade entre a deficiência e as atribuições do cargo** previsto no art. 5º, §2º, II, do Decreto nº 9.508/2018 — ora expressamente consignado no Parecer Conclusivo Colegiado anexo. **Não constitui**, nem constituiu, juízo de aptidão em sentido próprio, tampouco resultado de exame psicotécnico ou de procedimento de natureza eliminatória ou classificatória. No mesmo sentido, a referência à Norma Regulamentadora nº 1 (NR‑1) naquele documento reporta-se a diretriz geral de boas práticas em avaliação no contexto laboral, e **não constitui fundamento normativo** da avaliação, que se rege exclusivamente pela Lei nº 13.146/2015, pelo Decreto nº 9.508/2018 e pela Convenção sobre os Direitos das Pessoas com Deficiência (Decreto nº 6.949/2009).
+
 ---
 
 ### Quesito 4 — Disponibilização de cópia integral da Avaliação Biopsicossocial
@@ -160,10 +167,11 @@ Na condição de **Operadora**, esta CONTRATADA não detém competência para de
 
 Nesses termos, esta CONTRATADA **coloca à imediata disposição dessa Administração**, para a instrução do processo e o atendimento do requerimento:
 
-- parecer conclusivo da junta multiprofissional e interdisciplinar, com respectiva fundamentação;
-- laudo/relatório médico produzido na avaliação;
-- relatório psicológico, elaborado nos termos da Resolução CFP nº 06/2019;
-- ata/registro da deliberação da junta.
+- **Parecer Conclusivo da Junta Multiprofissional e Interdisciplinar**, com respectiva fundamentação;
+- **Ata de Deliberação** da junta;
+- **Laudo Caracterizador de Deficiência**, de 21/06/2026;
+- **Atestado Psicossocial**, de 24/06/2026;
+- **Ficha de Avaliação Clínica Complementar**, de 21/06/2026.
 
 Quanto ao **material técnico dos testes** — folhas de resposta, protocolos, crivos de correção e cadernos de aplicação —, esclarece-se que a **Resolução CFP nº 31/2022** determina seu arquivamento em pasta de **acesso exclusivo do psicólogo**, em razão da necessidade de preservação da validade dos instrumentos para toda a coletividade de avaliados. A forma técnica e eticamente adequada de atender integralmente ao pedido, sem restringir o direito da candidata, é a **entrega desse material a psicólogo(a) regularmente inscrito(a) no Conselho Regional de Psicologia por ela indicado(a)**, mediante identificação e termo de responsabilidade. Esta CONTRATADA promoverá tal entrega mediante simples determinação dessa Administração.
 
@@ -177,13 +185,15 @@ A junta responsável pela avaliação da requerente e pela emissão do parecer c
 
 | Nome | Formação / Especialidade | Registro profissional | Atuação na avaliação |
 |---|---|---|---|
-| [___] | Medicina — Neurologia | CRM/SP [___] | [___] |
-| [___] | Psicologia | CRP/[__] [___] | [___] |
-| [___] | [___] | [___] | [___] |
+| **Dr. Lucas Duarte José Maria** | Medicina — Neurologia | CRM‑SP 235.344 / RQE 51101 | Anamnese, exame clínico, análise da documentação médica e caracterização do impedimento |
+| **Aparecida de Fátima Camillo** | Psicologia | CRP 06/32540 | Entrevista psicológica semiestruturada e avaliação dos domínios psicológicos e cognitivos |
+| **Alex Waltersdorf** | Enfermagem | COREN‑SP 267.339 | Avaliação clínica complementar e integração da junta deliberativa |
 
-[**Ajustar conforme a dinâmica efetivamente adotada.** Se o terceiro integrante participou da deliberação e da assinatura do parecer sem atendimento presencial direto, incluir: *Esclarece-se que a exigência legal e contratual refere-se à composição da junta emissora do parecer, que atua de forma interdisciplinar e colegiada, não implicando necessariamente atendimento presencial simultâneo de todos os integrantes a cada candidato.*]
+São **três profissionais**, de **três áreas de conhecimento distintas**, sendo **um deles da área médica** — exatamente o que exige o art. 5º, *caput*, do Decreto nº 9.508/2018.
 
-Todos os profissionais mantêm registro ativo nos respectivos conselhos de classe, em cumprimento aos itens 2.4.1 e 5.2 do Termo de Referência. Documentação comprobatória — atos de designação e comprovantes de inscrição profissional — segue anexa a este ofício.
+Esclarece-se que a exigência legal e contratual refere-se à composição da **junta emissora do parecer**, que atua de forma interdisciplinar e colegiada. A percepção da requerente de ter sido avaliada por dois profissionais decorre de terem sido os atendimentos do médico neurologista e da psicóloga aqueles de maior duração e interação direta; a participação do enfermeiro integrante da junta está igualmente documentada, tanto na avaliação clínica complementar quanto na deliberação colegiada registrada em ata.
+
+Todos os profissionais mantêm registro ativo nos respectivos conselhos de classe, em cumprimento aos itens 2.4.1 e 5.2 do Termo de Referência. Documentação comprobatória — comprovantes de inscrição profissional e Ata de Deliberação — segue anexa a este ofício.
 
 ---
 
@@ -239,13 +249,14 @@ CNPJ nº 47.513.472/0001‑01
 
 **ANEXOS:**
 
-1. Parecer conclusivo da junta multiprofissional e interdisciplinar
-2. Laudo/relatório médico
-3. Relatório psicológico (Resolução CFP nº 06/2019)
-4. Ata/registro da deliberação da junta
-5. Atos de designação e comprovantes de registro profissional dos integrantes da junta
-6. Consulta ao SATEPSI/CFP — situação do TEACO‑2 e do TEPIC‑M‑2 em 21/06/2026
-7. Matriz de correlação instrumento × domínio CIF × fundamento legal
+1. Parecer Conclusivo da Junta Multiprofissional e Interdisciplinar
+2. Ata de Deliberação da Junta Multiprofissional e Interdisciplinar
+3. Laudo Caracterizador de Deficiência, de 21/06/2026
+4. Atestado Psicossocial, de 24/06/2026
+5. Ficha de Avaliação Clínica Complementar, de 21/06/2026
+6. Comprovantes de registro profissional dos integrantes da junta (CRM, CRP e COREN)
+7. Consulta ao SATEPSI/CFP — situação do TEACO‑2 e do TEPIC‑M‑2 em 21/06/2026
+8. Matriz de correlação instrumento × domínio CIF × fundamento legal
 
 ---
 ---
@@ -262,11 +273,13 @@ CNPJ nº 47.513.472/0001‑01
 
 ### O que ainda precisa ser resolvido antes de assinar
 
-1. **Quesito 5 continua sendo o ponto crítico.** A requerente relata atendimento por **dois** profissionais. O art. 5º, *caput*, do Decreto nº 9.508/2018 exige **três**, de áreas distintas, um da medicina. Confirme quantos assinaram o parecer e se há ata. **Se foram apenas dois, não envie o ofício nesta forma** — alinhe antes com a assessoria jurídica da Câmara.
+1. **Quesito 5 está resolvido.** A junta contou com três profissionais de áreas distintas, um da medicina (CRM‑SP 235.344, CRP 06/32540, COREN‑SP 267.339), atendendo ao art. 5º, *caput*. **Condição para enviar:** o Parecer Conclusivo Colegiado e a Ata de Deliberação — arquivo `2026-07-28-parecer-colegiado-complementar-e-ata.md` — precisam estar **assinados pelos três** antes do envio deste ofício. Sem eles, o ofício afirma existir documento colegiado que ainda não existe.
 
 2. **Atenção à estrutura de itens do contrato.** Os quantitativos foram precificados por **especialidade médica** (Clínica Geral, Neurologia, Oftalmologia, Ortopedia, Otorrinolaringologia, Psiquiatria, Reumatologia — 89 avaliações, R$ 53.300,00). Não há item próprio para Psicologia. Isso **não é irregularidade**: o preço unitário remunera o *"Serviço de Avaliação multiprofissional e emissão de laudo"* como um todo, e o item 2.4.2 autoriza a composição interdisciplinar sem exigir item orçamentário separado. Mas convém que a resposta deixe isso claro caso surja questionamento sobre escopo ou pagamento. A avaliação da requerente corresponde ao **item 2 — Neurologia**.
 
 3. **Quesito 3 não admite resposta genérica.** Preencha com a leitura efetiva dos resultados. Resposta vaga aqui reabre o que os demais quesitos fecharam.
+
+3.1. **Definir a questão dos "fatores de personalidade".** O Atestado Psicossocial de 24/06/2026 descreve *"análise do perfil de fatores de personalidade, atenção concentrada e memória"* — três construtos, enquanto o Quesito 1 responde por dois instrumentos. Confirme com a psicóloga se houve instrumento específico de personalidade (e, em caso positivo, seu status no SATEPSI em 21/06/2026) ou se o construto foi apreciado por observação clínica na entrevista. O item V do Parecer Conclusivo Colegiado traz as duas redações alternativas. **Este é o único ponto ainda em aberto.**
 
 4. **Anexo 6 — print datado do SATEPSI.** Gere a consulta em satepsi.cfp.org.br confirmando o parecer favorável do TEACO‑2 e do TEPIC‑M‑2. A afirmação precisa estar provada, não apenas declarada.
 
