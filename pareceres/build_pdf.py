@@ -96,6 +96,13 @@ code { font-family: inherit; }
   font-size: 8pt; color: #4b5563; text-align: center; font-style: italic;
 }
 .pagebreak { page-break-before: always; }
+
+.workhead { border-bottom: .8pt solid #6b7280; }
+.internal {
+  border: 1pt solid #b91c1c; background: #fef2f2; color: #7f1d1d;
+  text-align: center; font-size: 9pt; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; padding: 2mm; margin: 0 0 6mm;
+}
 """
 
 LETTERHEAD = """
@@ -109,6 +116,20 @@ LETTERHEAD = """
 </div>
 """
 
+# Cabeçalho dos documentos de trabalho, que não são peça oficial da clínica
+WORKHEAD = """
+<div class="letterhead workhead">
+  <span class="meta">
+    Concurso Público nº 01/2025 &mdash; Câmara Municipal de Caraguatatuba<br>
+    Avaliação Biopsicossocial &mdash; documento técnico de apoio
+  </span>
+</div>
+"""
+
+INTERNAL_BANNER = """
+<div class="internal">Uso interno &mdash; não encaminhar à Câmara Municipal</div>
+"""
+
 # Marcadores que encerram a parte impressa do documento
 CUT_MARKERS = (
     "## NOTA AO RESPONSÁVEL LEGAL",
@@ -119,12 +140,13 @@ CUT_MARKERS = (
 BLANK = "␟"  # sentinela para proteger placeholders com underscore
 
 
-def prepare(md_text: str) -> str:
+def prepare(md_text: str, keep_notes: bool = False) -> str:
     """Remove notas internas, blocos de orientação e normaliza marcadores."""
-    for marker in CUT_MARKERS:
-        idx = md_text.find(marker)
-        if idx != -1:
-            md_text = md_text[:idx]
+    if not keep_notes:
+        for marker in CUT_MARKERS:
+            idx = md_text.find(marker)
+            if idx != -1:
+                md_text = md_text[:idx]
     # remove o blockquote de instrução do topo
     md_text = re.sub(r"^> \*\*(Documento|Dois documentos).*?\n\n", "", md_text,
                      flags=re.S | re.M)
@@ -177,13 +199,15 @@ def render(md_text: str) -> str:
     return html
 
 
-def build(src: Path, title: str) -> Path:
-    md_text = prepare(src.read_text(encoding="utf-8"))
+def build(src: Path, title: str, kind: str = "clinic") -> Path:
+    md_text = prepare(src.read_text(encoding="utf-8"), keep_notes=kind != "clinic")
     body = render(md_text)
+    head = LETTERHEAD if kind == "clinic" else WORKHEAD
+    banner = INTERNAL_BANNER if kind == "internal" else ""
     html = f"""<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <title>{title}</title><style>{CSS}</style></head>
-<body>{LETTERHEAD}{body}</body></html>"""
+<body>{head}{banner}{body}</body></html>"""
     OUT.mkdir(exist_ok=True)
     html_path = OUT / (src.stem + ".html")
     pdf_path = OUT / (src.stem + ".pdf")
@@ -199,16 +223,24 @@ def build(src: Path, title: str) -> Path:
     return pdf_path
 
 
+# (arquivo, título, tipo) — clinic: papel timbrado da clínica, peça a ser
+# encaminhada; work: documento técnico de apoio; internal: uso interno restrito.
 DOCS = [
     ("2026-07-28-oficio-total-quality-manifestacao-tecnica-camara.md",
-     "Ofício de Manifestação Técnica"),
+     "Ofício de Manifestação Técnica", "clinic"),
     ("2026-07-28-parecer-colegiado-complementar-e-ata.md",
-     "Parecer Conclusivo Colegiado e Ata de Deliberação"),
+     "Parecer Conclusivo Colegiado e Ata de Deliberação", "clinic"),
+    ("2026-07-28-parecer-tecnico-avaliacao-biopsicossocial-testes-psicologicos.md",
+     "Parecer Técnico — Avaliação Biopsicossocial e Testes Psicológicos", "work"),
+    ("2026-07-28-minuta-resposta-requerimento-esclarecimentos.md",
+     "Minuta de Resposta ao Requerimento de Esclarecimentos", "work"),
+    ("2026-07-28-analise-critica-documentacao-emitida.md",
+     "Análise Crítica da Documentação Emitida", "internal"),
 ]
 
 if __name__ == "__main__":
-    for filename, title in DOCS:
+    for filename, title, kind in DOCS:
         src = BASE / filename
         if not src.exists():
             sys.exit(f"nao encontrado: {src}")
-        print("gerado:", build(src, title))
+        print(f"gerado [{kind}]:", build(src, title, kind).name)
