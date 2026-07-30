@@ -2,6 +2,7 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/** Raiz do projeto (a pasta que contém src/ e package.json). */
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function str(name, fallback = '') {
@@ -25,7 +26,9 @@ function int(name, fallback) {
  */
 function resolveDatabasePath(value) {
   if (value === ':memory:' || value.startsWith('file:')) return value;
-  return path.resolve(ROOT, '..', value);
+  // Caminhos relativos apontam para a raiz do projeto, não para o diretório
+  // de onde o comando foi chamado — assim o CLI acha o mesmo banco do servidor.
+  return path.resolve(ROOT, value);
 }
 
 function bool(name, fallback) {
