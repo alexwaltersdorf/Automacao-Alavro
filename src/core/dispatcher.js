@@ -2,7 +2,7 @@ import config from '../config.js';
 import logger from '../logger.js';
 import { getDb, nowIso, todayUtc } from '../db/index.js';
 import { getClient } from '../whatsapp/client.js';
-import { ERROR_ACTIONS } from '../whatsapp/errors.js';
+import { ERROR_ACTIONS, pairBackoffMs } from '../whatsapp/errors.js';
 import {
   buildTextMessage,
   buildTemplateMessage,
@@ -38,11 +38,13 @@ export class Dispatcher {
     this.retryBaseDelayMs = options.retryBaseDelayMs ?? config.sending.retryBaseDelayMs;
     this.dailyLimit = options.dailyLimit ?? config.sending.dailyUniqueRecipientLimit;
     this.pollIntervalMs = options.pollIntervalMs ?? 1500;
+    // Pair rate limit da Meta: 1 mensagem a cada 6s para o mesmo destinatário.
+    this.perRecipientIntervalMs = options.perRecipientIntervalMs ?? config.sending.perRecipientIntervalMs;
 
     this.running = false;
     this.stopping = false;
     this.loopPromise = null;
-    this.stats = { sent: 0, failed: 0, skipped: 0, throttles: 0, startedAt: null };
+    this.stats = { sent: 0, failed: 0, skipped: 0, throttles: 0, pairDeferrals: 0, startedAt: null };
   }
 
   start() {
@@ -209,12 +211,19 @@ export class Dispatcher {
       return 'skipped';
     }
 
+    // Pair rate limit: mandar duas mensagens ao mesmo número em menos de 6s
+    // devolve 131056. Adiar é mais barato do que queimar a tentativa.
+    const waitMs = this.pairRateWaitMs(message.phone_e164);
+    if (waitMs > 0) {
+      this.deferMessage(message, new Date(Date.now() + waitMs).toISOString());
+      this.stats.pairDeferrals += 1;
+      log.debug('envio adiado pelo limite por destinatário', { to: message.phone_e164, waitMs });
+      return 'deferred';
+    }
+
     if (!this.reserveDailySlot(message.phone_e164)) {
       // Teto diário do tier atingido: devolve para amanhã em vez de queimar a tentativa.
-      const tomorrow = new Date(Date.now() + 60 * 60 * 1000).toISOString();
-      this.db
-        .prepare("UPDATE messages SET status = 'pending', next_attempt_at = ?, updated_at = ? WHERE id = ?")
-        .run(tomorrow, nowIso(), message.id);
+      this.deferMessage(message, new Date(Date.now() + 60 * 60 * 1000).toISOString());
       log.warn('limite diário de destinatários únicos atingido', { limite: this.dailyLimit });
       return 'deferred';
     }
@@ -232,6 +241,7 @@ export class Dispatcher {
         )
         .run(wamid, nowIso(), JSON.stringify(payload), nowIso(), message.id);
 
+      this.recordRecipientSend(message.phone_e164);
       this.stats.sent += 1;
       this.limiter.recover();
       log.debug('mensagem enviada', { messageId: message.id, to: message.phone_e164, wamid });
@@ -295,10 +305,19 @@ export class Dispatcher {
     }
 
     if (action === ERROR_ACTIONS.THROTTLE) {
-      const newRate = this.limiter.backoff();
       this.stats.throttles += 1;
-      log.warn('limite de taxa da Meta atingido, reduzindo ritmo', { novoRitmo: newRate, code: base.code });
-      this.requeue(message, attempts, base, payload);
+
+      if (error.perRecipient) {
+        // Estouro do limite daquele destinatário, não do número comercial:
+        // reduzir o ritmo global puniria a campanha inteira sem necessidade.
+        this.recordRecipientSend(message.phone_e164);
+        log.debug('limite por destinatário atingido', { to: message.phone_e164, attempts });
+      } else {
+        const newRate = this.limiter.backoff();
+        log.warn('limite de taxa da Meta atingido, reduzindo ritmo', { novoRitmo: newRate, code: base.code });
+      }
+
+      this.requeue(message, attempts, base, payload, error.backoff);
       return action;
     }
 
@@ -311,13 +330,18 @@ export class Dispatcher {
     return ERROR_ACTIONS.FAIL;
   }
 
-  /** Reagenda com backoff exponencial + jitter. */
-  requeue(message, attempts, error, payload) {
+  /**
+   * Reagenda com backoff + jitter.
+   * @param {'exponential'|'pair'} strategy 'pair' usa o 4^X prescrito pela Meta
+   *   para o erro 131056; qualquer outro caso usa o 2^X padrão.
+   */
+  requeue(message, attempts, error, payload, strategy = 'exponential') {
     if (attempts > this.maxRetries) {
       this.markFailed(message, error, attempts, payload);
       return;
     }
-    const delay = this.retryBaseDelayMs * 2 ** (attempts - 1);
+    const delay =
+      strategy === 'pair' ? pairBackoffMs(attempts) : this.retryBaseDelayMs * 2 ** (attempts - 1);
     const jitter = Math.floor(Math.random() * Math.min(delay, 5000));
     const nextAttempt = new Date(Date.now() + delay + jitter).toISOString();
 
@@ -352,6 +376,37 @@ export class Dispatcher {
       )
       .run(reason, nowIso(), message.id);
     this.stats.skipped += 1;
+  }
+
+  /** Devolve a mensagem à fila para uma nova tentativa em `nextAttemptAt`. */
+  deferMessage(message, nextAttemptAt) {
+    this.db
+      .prepare("UPDATE messages SET status = 'pending', next_attempt_at = ?, updated_at = ? WHERE id = ?")
+      .run(nextAttemptAt, nowIso(), message.id);
+  }
+
+  /**
+   * Quanto falta esperar antes de poder mandar outra mensagem a este número.
+   * @returns {number} milissegundos (0 = pode enviar agora)
+   */
+  pairRateWaitMs(phone) {
+    if (!this.perRecipientIntervalMs || this.perRecipientIntervalMs <= 0) return 0;
+
+    const row = this.db.prepare('SELECT last_sent_at FROM recipient_throttle WHERE phone_e164 = ?').get(phone);
+    if (!row) return 0;
+
+    const elapsed = Date.now() - new Date(row.last_sent_at).getTime();
+    if (Number.isNaN(elapsed) || elapsed < 0) return 0;
+    return Math.max(0, this.perRecipientIntervalMs - elapsed);
+  }
+
+  recordRecipientSend(phone) {
+    this.db
+      .prepare(
+        `INSERT INTO recipient_throttle (phone_e164, last_sent_at) VALUES (?, ?)
+         ON CONFLICT (phone_e164) DO UPDATE SET last_sent_at = excluded.last_sent_at`,
+      )
+      .run(phone, nowIso());
   }
 
   /**
@@ -407,6 +462,7 @@ export class Dispatcher {
       pendingMessages: pending,
       uniqueRecipientsToday: sentToday,
       dailyLimit: this.dailyLimit || 'ilimitado',
+      perRecipientIntervalMs: this.perRecipientIntervalMs,
       rate: this.limiter.stats(),
       concurrency: this.concurrency,
       totals: this.stats,

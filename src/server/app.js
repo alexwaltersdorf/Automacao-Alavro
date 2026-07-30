@@ -6,6 +6,7 @@ import webhookRouter from './routes/webhook.js';
 import contactsRouter from './routes/contacts.js';
 import campaignsRouter from './routes/campaigns.js';
 import templatesRouter from './routes/templates.js';
+import analyticsRouter from './routes/analytics.js';
 import systemRouter from './routes/system.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -26,6 +27,7 @@ export function createApp() {
   app.use('/api/contacts', contactsRouter);
   app.use('/api/campaigns', campaignsRouter);
   app.use('/api/templates', templatesRouter);
+  app.use('/api/analytics', analyticsRouter);
   app.use('/api', systemRouter);
 
   app.use(express.static(path.join(HERE, 'public')));

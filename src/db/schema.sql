@@ -125,6 +125,14 @@ CREATE TABLE IF NOT EXISTS daily_send_counter (
   PRIMARY KEY (day, phone_e164)
 );
 
+-- Pair rate limit: último envio para cada destinatário -----------------------
+-- A Meta permite 1 mensagem a cada 6 segundos para o MESMO usuário
+-- (~10/min, 600/h). Ultrapassar dispara o erro 131056.
+CREATE TABLE IF NOT EXISTS recipient_throttle (
+  phone_e164   TEXT NOT NULL PRIMARY KEY,
+  last_sent_at TEXT NOT NULL
+);
+
 -- Cache dos templates aprovados na Meta --------------------------------------
 CREATE TABLE IF NOT EXISTS templates_cache (
   name        TEXT NOT NULL,

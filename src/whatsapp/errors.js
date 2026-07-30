@@ -32,7 +32,15 @@ const CATALOG = new Map([
   [4, { action: ERROR_ACTIONS.THROTTLE, message: 'Limite de requisições da aplicação atingido.' }],
   [80007, { action: ERROR_ACTIONS.THROTTLE, message: 'Limite de taxa da conta do WhatsApp Business atingido.' }],
   [130429, { action: ERROR_ACTIONS.THROTTLE, message: 'Limite de throughput da Cloud API atingido. Reduza SEND_RATE_PER_SECOND.' }],
-  [131056, { action: ERROR_ACTIONS.THROTTLE, message: 'Muitas mensagens para o mesmo destinatário em pouco tempo.' }],
+  // Pair rate limit: 1 mensagem a cada 6s para o mesmo usuário. A Meta prescreve
+  // reenviar após 4^X segundos (X começa em 0 e sobe a cada falha) — por isso
+  // este código usa uma estratégia de backoff própria, não a exponencial padrão.
+  [131056, {
+    action: ERROR_ACTIONS.THROTTLE,
+    message: 'Limite por destinatário: só é permitida 1 mensagem a cada 6 segundos para o mesmo usuário.',
+    backoff: 'pair',
+    perRecipient: true,
+  }],
   [133016, { action: ERROR_ACTIONS.THROTTLE, message: 'Excesso de requisições no número comercial.' }],
   [131048, { action: ERROR_ACTIONS.PAUSE, message: 'Limite anti-spam atingido: a qualidade do número caiu. Pause os disparos e revise o conteúdo.' }],
 
@@ -113,8 +121,23 @@ export function classifyError(httpStatus, body) {
     subcode,
     title,
     detail,
+    // 'pair' = backoff 4^X prescrito pela Meta; 'exponential' = 2^X padrão.
+    backoff: known?.backoff ?? 'exponential',
+    // Estouro do limite daquele destinatário específico, não do número comercial:
+    // não faz sentido reduzir o ritmo global por causa dele.
+    perRecipient: known?.perRecipient === true,
     retryable: action === ERROR_ACTIONS.RETRY || action === ERROR_ACTIONS.THROTTLE,
   };
+}
+
+/**
+ * Espera prescrita pela Meta para o pair rate limit: 4^X segundos,
+ * com X começando em 0 na primeira falha.
+ */
+export function pairBackoffMs(attempt) {
+  const exponent = Math.max(0, attempt - 1);
+  // Teto de 256s (4^4) para não deixar uma mensagem parada por horas.
+  return Math.min(4 ** exponent, 256) * 1000;
 }
 
 /** Erro lançado pelo cliente da Cloud API, já classificado. */
@@ -130,7 +153,9 @@ export class WhatsAppApiError extends Error {
     this.detail = classification.detail;
     this.action = classification.action;
     this.retryable = classification.retryable;
+    this.backoff = classification.backoff;
+    this.perRecipient = classification.perRecipient;
   }
 }
 
-export default { classifyError, WhatsAppApiError, ERROR_ACTIONS };
+export default { classifyError, pairBackoffMs, WhatsAppApiError, ERROR_ACTIONS };

@@ -54,6 +54,8 @@ export const config = {
     ratePerSecond: int('SEND_RATE_PER_SECOND', 15),
     concurrency: int('SEND_CONCURRENCY', 8),
     dailyUniqueRecipientLimit: int('DAILY_UNIQUE_RECIPIENT_LIMIT', 1000),
+    // Pair rate limit da Meta: 1 mensagem a cada 6s para o mesmo destinatário.
+    perRecipientIntervalMs: int('PER_RECIPIENT_INTERVAL_MS', 6000),
     maxRetries: int('MAX_RETRIES', 4),
     retryBaseDelayMs: int('RETRY_BASE_DELAY_MS', 2000),
     dryRun: bool('DRY_RUN', false),

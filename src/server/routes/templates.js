@@ -23,12 +23,34 @@ router.post(
     const db = getDb();
     const collected = [];
 
+    // Endpoints de gestão têm teto de 200 req/h por app/WABA (5000 com número
+    // registrado). Limitamos as páginas para que uma sincronização não consuma
+    // a cota da hora inteira, e paramos se a Meta avisar que estamos no limite.
+    const MAX_PAGES = 20;
+    let pages = 0;
+    let truncated = false;
     let after;
+
     do {
       const page = await client.listTemplates({ limit: 100, after });
       collected.push(...(page.data ?? []));
-      after = page.paging?.cursors?.after;
-      if (!page.paging?.next) after = undefined;
+      pages += 1;
+
+      after = page.paging?.next ? page.paging?.cursors?.after : undefined;
+
+      if (after && pages >= MAX_PAGES) {
+        truncated = true;
+        log.warn('sincronização interrompida no limite de páginas', { pages, coletados: collected.length });
+        break;
+      }
+      if (after && typeof client.usage.callCount === 'number' && client.usage.callCount >= 90) {
+        truncated = true;
+        log.warn('sincronização interrompida: cota da Graph API quase esgotada', {
+          consumoPercentual: client.usage.callCount,
+          coletados: collected.length,
+        });
+        break;
+      }
     } while (after);
 
     const upsert = db.prepare(
@@ -51,10 +73,15 @@ router.post(
       }
     })();
 
-    log.info('templates sincronizados', { total: collected.length });
+    log.info('templates sincronizados', { total: collected.length, pages, truncated });
     res.json({
       synced: collected.length,
       approved: collected.filter((t) => t.status === 'APPROVED').length,
+      pages,
+      // Sinaliza explicitamente quando a lista veio incompleta, em vez de
+      // deixar parecer que sincronizou tudo.
+      truncated,
+      graphApiUsage: client.usage,
       items: collected,
     });
   }),

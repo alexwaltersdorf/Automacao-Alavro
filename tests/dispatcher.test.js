@@ -275,3 +275,99 @@ test('registra o wamid devolvido pela Meta para casar com o webhook', async () =
   assert.equal(message.wamid, 'wamid.ABC123');
   assert.ok(message.sent_at);
 });
+
+// --- Pair rate limit (1 mensagem a cada 6s por destinatário) ----------------
+
+test('adia o segundo envio ao mesmo número em vez de estourar o limite da Meta', async () => {
+  const db = testDb();
+  const { listId, contactIds } = seedContacts(db, 1);
+  const client = mockClient(() => ({ status: 200 }));
+
+  // Duas campanhas para o mesmo contato, disparadas em sequência.
+  const primeira = makeCampaign(db, listId, { name: 'Campanha A' });
+  const segunda = makeCampaign(db, listId, { name: 'Campanha B' });
+
+  buildQueue(primeira.id, {}, db);
+  buildQueue(segunda.id, {}, db);
+  startCampaign(primeira.id, db);
+  startCampaign(segunda.id, db);
+
+  const dispatcher = makeDispatcher(db, client);
+  await dispatcher.tick();
+
+  assert.equal(client.calls.length, 1, 'só a primeira sai; a segunda espera os 6s');
+  assert.equal(dispatcher.stats.pairDeferrals, 1);
+
+  const adiada = db.prepare('SELECT * FROM messages WHERE campaign_id = ?').get(segunda.id);
+  assert.equal(adiada.status, 'pending', 'a mensagem não se perde');
+  assert.ok(
+    new Date(adiada.next_attempt_at).getTime() > Date.now(),
+    'ganha horário futuro respeitando o intervalo',
+  );
+  assert.equal(adiada.attempts, 0, 'adiar não consome tentativa');
+
+  assert.equal(getContactById(contactIds[0], db).opted_in, true);
+});
+
+test('não adia envios para números diferentes', async () => {
+  const db = testDb();
+  const { listId } = seedContacts(db, 5);
+  const client = mockClient(() => ({ status: 200 }));
+  const campaign = makeCampaign(db, listId);
+
+  buildQueue(campaign.id, {}, db);
+  startCampaign(campaign.id, db);
+
+  const dispatcher = makeDispatcher(db, client);
+  await dispatcher.tick();
+
+  assert.equal(client.calls.length, 5, 'o limite é por destinatário, não global');
+  assert.equal(dispatcher.stats.pairDeferrals, 0);
+});
+
+test('desligar o intervalo por destinatário libera os envios seguidos', async () => {
+  const db = testDb();
+  const { listId } = seedContacts(db, 1);
+  const client = mockClient(() => ({ status: 200 }));
+
+  const primeira = makeCampaign(db, listId, { name: 'A' });
+  const segunda = makeCampaign(db, listId, { name: 'B' });
+  buildQueue(primeira.id, {}, db);
+  buildQueue(segunda.id, {}, db);
+  startCampaign(primeira.id, db);
+  startCampaign(segunda.id, db);
+
+  await makeDispatcher(db, client, { perRecipientIntervalMs: 0 }).tick();
+  assert.equal(client.calls.length, 2);
+});
+
+test('erro 131056 usa o backoff 4^X e não reduz o ritmo global', async () => {
+  const db = testDb();
+  const { listId } = seedContacts(db, 1);
+  const client = mockClient(() => ({ status: 400, body: metaError(131056) }));
+
+  const campaign = makeCampaign(db, listId);
+  buildQueue(campaign.id, {}, db);
+  startCampaign(campaign.id, db);
+
+  const dispatcher = makeDispatcher(db, client, { perRecipientIntervalMs: 0 });
+  const ritmoInicial = dispatcher.limiter.currentRate;
+  const antes = Date.now();
+  await dispatcher.tick();
+
+  assert.equal(
+    dispatcher.limiter.currentRate,
+    ritmoInicial,
+    'o limite é daquele destinatário: o ritmo do número comercial não muda',
+  );
+  assert.equal(dispatcher.stats.throttles, 1);
+
+  const message = db.prepare('SELECT * FROM messages WHERE campaign_id = ?').get(campaign.id);
+  assert.equal(message.status, 'pending');
+  assert.equal(message.error_code, 131056);
+
+  // 4^0 = 1s na primeira falha (mais jitter), bem abaixo dos 2s do backoff padrão.
+  const espera = new Date(message.next_attempt_at).getTime() - antes;
+  assert.ok(espera >= 1000, `esperava ao menos 1s, obteve ${espera}ms`);
+  assert.ok(espera < 7000, `esperava menos que 7s, obteve ${espera}ms`);
+});

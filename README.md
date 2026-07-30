@@ -16,6 +16,9 @@ passa pelo canal autorizado da Meta, com token permanente de Usuário do Sistema
 | **Janela de 24h** | Controlada automaticamente: texto livre só sai para quem respondeu nas últimas 24h |
 | **Opt-out automático** | Palavras-chave (PARAR, SAIR, CANCELAR…) descadastram e cancelam envios pendentes na hora |
 | **Limite diário por tier** | Respeita o teto de destinatários únicos em 24h da sua conta |
+| **Pair rate limit** | Espaça 6s entre mensagens ao mesmo número e usa o backoff `4^X` prescrito pela Meta para o erro 131056 |
+| **Cota da Graph API** | Lê o header `X-Business-Use-Case-Usage` e freia os endpoints de gestão antes do bloqueio |
+| **Analytics da Meta** | Volume de mensagens, custo por conversa e desempenho por template |
 | **Importação CSV** | Vírgula ou ponto e vírgula, BOM do Excel, colunas em português, campos extras viram variáveis |
 | **Telefones brasileiros** | Normalização E.164 com nono dígito, validação de DDD, casamento do `wa_id` do webhook |
 | **Painel web** | Métricas em tempo real, progresso das campanhas, controle do motor |
@@ -232,6 +235,25 @@ assinatura HMAC da própria Meta.
 | `POST` | `/api/dispatcher/start` \| `/stop` | Liga/desliga o motor |
 | `POST` | `/api/dispatcher/rate` | Ajusta msg/s em tempo real |
 
+### Analytics (Business Management API)
+
+Números vindos da própria Meta, que cobrem tudo que saiu pelo número — inclusive
+o que não passou por este sistema.
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/api/analytics/messaging` | Enviadas e entregues por período |
+| `GET` | `/api/analytics/pricing` | Custo por conversa |
+| `GET` | `/api/analytics/templates` | Enviadas, entregues, lidas e cliques por template |
+
+Aceitam `?start=` e `?end=` em ISO 8601 ou timestamp Unix (padrão: últimos 30
+dias) e `?granularity=`. O de templates exige `?template_ids=123,456`.
+
+```bash
+npm run cli analytics --days 7
+curl "localhost:3000/api/analytics/templates?template_ids=123&start=2026-07-01"
+```
+
 ### Exemplo: campanha completa por HTTP
 
 ```bash
@@ -301,6 +323,33 @@ Configure o seu em `DAILY_UNIQUE_RECIPIENT_LIMIT`. Ao bater o teto, as mensagens
 restantes ficam `pending` e voltam a sair depois — a campanha não falha nem se
 perde. Confira o tier atual com `npm run cli doctor`.
 
+### Limite por destinatário (pair rate limit)
+
+Além do teto global, a Meta limita **1 mensagem a cada 6 segundos para o mesmo
+usuário** (~10/min, 600/h). Ultrapassar devolve o erro 131056.
+
+Num disparo comum cada contato recebe uma vez só e isso não pesa. O limite
+aparece quando duas campanhas alcançam o mesmo contato, ou numa retentativa
+logo após o envio. O sistema:
+
+- espaça os envios ao mesmo número em `PER_RECIPIENT_INTERVAL_MS` (6s por
+  padrão), adiando a mensagem em vez de queimar uma tentativa;
+- ao receber 131056, usa o backoff **`4^X` segundos** que a Meta prescreve
+  (1s → 4s → 16s → 64s → 256s), e não o `2^X` dos demais erros;
+- **não reduz o ritmo global** nesse caso — o limite é daquele destinatário, e
+  frear a campanha inteira puniria os outros contatos sem motivo.
+
+### Cota da Graph API nos endpoints de gestão
+
+Os endpoints de gestão (templates, números, usuários) têm teto de **200
+requisições por hora** por app/WABA — 5.000 quando a WABA já tem número
+registrado. **O envio de mensagens não entra nessa conta.**
+
+O cliente lê o header `X-Business-Use-Case-Usage` a cada resposta e expõe o
+consumo em `GET /api/dispatcher`. O `POST /api/templates/sync` para de paginar
+ao chegar em 20 páginas ou quando a Meta informa 90% de consumo, e devolve
+`truncated: true` — assim uma lista incompleta não passa por completa.
+
 ### Ritmo e nota de qualidade
 
 A Cloud API entrega 80 msg/s por padrão, mas **número novo disparando no limite
@@ -337,7 +386,8 @@ o conteúdo está gerando bloqueios. Revise a mensagem antes de retomar.
 | 368, 131031 | Conta bloqueada por política | **Pausa a campanha** |
 | 131048 | Limite anti-spam (qualidade caiu) | **Pausa a campanha** |
 | 133010, 131045 | Número não registrado na Cloud API | **Pausa a campanha** |
-| 4, 80007, 130429, 133016, 131056 | Excesso de requisições | Reduz o ritmo e reenvia |
+| 4, 80007, 130429, 133016 | Excesso de requisições no número | Reduz o ritmo e reenvia |
+| 131056 | Limite do destinatário (1 msg a cada 6s) | Backoff `4^X`, sem mexer no ritmo global |
 | 1, 2, 131000, 131016, HTTP 5xx | Instabilidade temporária | Reenvia com backoff |
 | 131026 | Número não usa WhatsApp | Marca o contato e não insiste |
 | 131047 | Janela de 24h fechada | Falha definitiva (use template) |
@@ -373,7 +423,7 @@ src/
 ├── server/
 │   ├── app.js              Express
 │   ├── middleware.js       Autenticação, logs, erros
-│   ├── routes/             contacts, campaigns, templates, system, webhook
+│   ├── routes/             contacts, campaigns, templates, analytics, system, webhook
 │   └── public/index.html   Painel
 └── utils/
     ├── phone.js            E.164, nono dígito, DDD
@@ -411,11 +461,12 @@ Erro temporário volta para `pending` com `next_attempt_at` no futuro.
 npm test
 ```
 
-73 testes cobrindo normalização de telefones brasileiros, classificação dos
+89 testes cobrindo normalização de telefones brasileiros, classificação dos
 erros da Meta, token bucket, motor de disparo com a Graph API mockada
 (retentativa, throttle, pausa por token inválido, teto diário, idempotência,
-janela de 24h), validação HMAC dos webhooks, ciclo de status de entrega,
-opt-out automático, importação de CSV e a API HTTP ponta a ponta.
+janela de 24h, pair rate limit), leitura da cota da Graph API, montagem das
+consultas de analytics, validação HMAC dos webhooks, ciclo de status de
+entrega, opt-out automático, importação de CSV e a API HTTP ponta a ponta.
 
 O script usa `tests/*.test.js` — glob de um nível só, expandido pelo shell,
 porque o Node 20 não interpreta `**` sozinho (isso só chegou no Node 22).
@@ -437,6 +488,7 @@ subpasta não seria executado e o CI passaria sem avisar.
 | `SEND_RATE_PER_SECOND` | `15` | Ritmo de envio |
 | `SEND_CONCURRENCY` | `8` | Requisições simultâneas |
 | `DAILY_UNIQUE_RECIPIENT_LIMIT` | `1000` | Teto do seu tier (`0` = ilimitado) |
+| `PER_RECIPIENT_INTERVAL_MS` | `6000` | Intervalo mínimo entre mensagens ao mesmo número (`0` desliga) |
 | `MAX_RETRIES` | `4` | Tentativas por mensagem |
 | `RETRY_BASE_DELAY_MS` | `2000` | Base do backoff |
 | `DRY_RUN` | `false` | Simula sem chamar a Meta |

@@ -158,6 +158,51 @@ program
     closeDb();
   });
 
+program
+  .command('analytics')
+  .description('Volume de mensagens enviadas e entregues, direto da Meta')
+  .option('-d, --days <n>', 'período em dias', '30')
+  .option('-g, --granularity <valor>', 'HALF_HOUR, DAY ou MONTH', 'DAY')
+  .action(async (options) => {
+    getDb();
+    const end = new Date();
+    const start = new Date(end.getTime() - Number(options.days) * 24 * 60 * 60 * 1000);
+
+    try {
+      const result = await getClient().getMessagingAnalytics({
+        start,
+        end,
+        granularity: options.granularity,
+      });
+      const points = result?.analytics?.data_points ?? [];
+      if (points.length === 0) {
+        console.log('\nNenhum dado no período. Analytics pode levar algumas horas para aparecer.');
+        return closeDb();
+      }
+
+      console.log(`\nÚltimos ${options.days} dias (${options.granularity}):\n`);
+      console.log('Período              Enviadas  Entregues');
+      let enviadas = 0;
+      let entregues = 0;
+      for (const point of points) {
+        const dia = new Date(point.start * 1000).toISOString().slice(0, 10);
+        console.log(
+          `${dia.padEnd(20)} ${String(point.sent ?? 0).padStart(8)}  ${String(point.delivered ?? 0).padStart(9)}`,
+        );
+        enviadas += point.sent ?? 0;
+        entregues += point.delivered ?? 0;
+      }
+      console.log(`\nTotal: ${enviadas} enviadas, ${entregues} entregues`);
+      if (enviadas > 0) {
+        console.log(`Taxa de entrega: ${((entregues / enviadas) * 100).toFixed(1)}%`);
+      }
+    } catch (error) {
+      console.log(`✗ ${error.detail ?? error.message}`);
+      process.exitCode = 1;
+    }
+    closeDb();
+  });
+
 // --- Campanhas --------------------------------------------------------------
 
 const campaigns = program.command('campaigns').description('Gerenciar campanhas');

@@ -20,7 +20,9 @@ router.get('/health', (_req, res) => {
 });
 
 /** Estado do motor de disparo. */
-router.get('/dispatcher', (_req, res) => res.json(getDispatcher().status()));
+router.get('/dispatcher', (_req, res) =>
+  res.json({ ...getDispatcher().status(), graphApiUsage: getClient().usage }),
+);
 
 router.post('/dispatcher/start', (_req, res) => {
   const dispatcher = getDispatcher();
