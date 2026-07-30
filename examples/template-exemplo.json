@@ -1,0 +1,30 @@
+{
+  "_comentario": "Enviar com: POST /api/templates — depois aguarde a aprovação da Meta (status APPROVED).",
+  "name": "promocao_julho",
+  "language": "pt_BR",
+  "category": "MARKETING",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "Novidade para você, {{1}}!",
+      "example": { "header_text": ["Maria"] }
+    },
+    {
+      "type": "BODY",
+      "text": "Olá {{1}}! Temos uma condição especial para clientes de {{2}} neste mês. Quer saber os detalhes?",
+      "example": { "body_text": [["Maria", "Caraguatatuba"]] }
+    },
+    {
+      "type": "FOOTER",
+      "text": "Responda SAIR para não receber mais mensagens."
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        { "type": "QUICK_REPLY", "text": "Quero saber mais" },
+        { "type": "QUICK_REPLY", "text": "Agora não" }
+      ]
+    }
+  ]
+}

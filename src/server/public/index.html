@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alavro — Disparo WhatsApp</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #161d26; --panel-2: #1d2733; --border: #263241;
+    --text: #e6edf3; --muted: #8b98a5; --accent: #25d366; --accent-2: #128c7e;
+    --warn: #f0b132; --danger: #f2555a; --info: #4a9eff;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f7fa; --panel: #fff; --panel-2: #f0f3f7; --border: #dde3ea;
+      --text: #16202a; --muted: #5d6b7a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--panel);
+    position: sticky; top: 0; z-index: 10; flex-wrap: wrap;
+  }
+  h1 { font-size: 17px; margin: 0; display: flex; align-items: center; gap: 9px; }
+  .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: #06231a; font-weight: 700; font-size: 13px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  section { margin-bottom: 30px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .card .label { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .card .value { font-size: 25px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .card .value.sm { font-size: 16px; font-weight: 550; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  th { background: var(--panel-2); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 600; }
+  .pill.running, .pill.queued { background: rgba(74,158,255,.16); color: var(--info); }
+  .pill.completed, .pill.delivered, .pill.read { background: rgba(37,211,102,.16); color: var(--accent); }
+  .pill.paused { background: rgba(240,177,50,.16); color: var(--warn); }
+  .pill.failed, .pill.cancelled { background: rgba(242,85,90,.16); color: var(--danger); }
+  .pill.draft, .pill.pending, .pill.skipped { background: var(--panel-2); color: var(--muted); }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); padding: 7px 13px; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #06231a; font-weight: 600; }
+  button.primary:hover { background: var(--accent-2); color: #fff; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .on { background: var(--accent); box-shadow: 0 0 0 3px rgba(37,211,102,.18); }
+  .off { background: var(--danger); box-shadow: 0 0 0 3px rgba(242,85,90,.18); }
+  .muted { color: var(--muted); font-size: 13px; }
+  .bar { height: 7px; background: var(--panel-2); border-radius: 99px; overflow: hidden; display: flex; margin-top: 7px; }
+  .bar > span { height: 100%; }
+  .alert { border: 1px solid var(--warn); background: rgba(240,177,50,.1); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; margin-bottom: 16px; }
+  code { background: var(--panel-2); padding: 1.5px 6px; border-radius: 5px; font-size: 12.5px; }
+  input { font: inherit; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 7px 11px; width: 90px; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="logo">A</span> Alavro · Disparo WhatsApp</h1>
+  <div class="row">
+    <span class="muted"><span id="engine-dot" class="status-dot off"></span> <span id="engine-label">motor parado</span></span>
+    <button id="btn-toggle">Iniciar motor</button>
+    <button id="btn-refresh">Atualizar</button>
+  </div>
+</header>
+
+<main>
+  <div id="alerts"></div>
+
+  <section>
+    <h2>Visão geral</h2>
+    <div class="grid" id="overview"></div>
+  </section>
+
+  <section>
+    <h2>Motor de disparo</h2>
+    <div class="grid" id="engine"></div>
+    <div class="row" style="margin-top:12px">
+      <span class="muted">Ritmo (msg/s):</span>
+      <input type="number" id="rate" min="1" step="1" />
+      <button id="btn-rate">Aplicar</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Campanhas</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Nome</th><th>Status</th><th>Template</th><th>Progresso</th><th>Entregues</th><th>Falhas</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="campaigns"><tr><td colspan="8" class="muted">carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const apiKey = new URLSearchParams(location.search).get('key') || localStorage.getItem('alavro_api_key') || '';
+if (apiKey) localStorage.setItem('alavro_api_key', apiKey);
+
+async function api(path, options = {}) {
+  const response = await fetch('/api' + path, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'X-API-Key': apiKey } : {}), ...options.headers },
+  });
+  if (!response.ok) throw new Error((await response.json().catch(() => ({}))).detail || response.statusText);
+  return response.json();
+}
+
+const number = (value) => (value ?? 0).toLocaleString('pt-BR');
+const card = (label, value, klass = '') => `<div class="card"><div class="label">${label}</div><div class="value ${klass}">${value}</div></div>`;
+
+function renderAlerts(health) {
+  const items = [];
+  if (health.credentials.sending.length) items.push(`Credenciais de envio faltando: <code>${health.credentials.sending.join('</code> <code>')}</code>. Preencha o <code>.env</code>.`);
+  if (health.credentials.webhook.length) items.push(`Webhook não configurado: <code>${health.credentials.webhook.join('</code> <code>')}</code>. Sem isso não há status de entrega.`);
+  if (health.dryRun) items.push('<strong>DRY_RUN ativo</strong> — nada é enviado de verdade à Meta.');
+  document.getElementById('alerts').innerHTML = items.map((text) => `<div class="alert">${text}</div>`).join('');
+}
+
+function renderOverview(data) {
+  document.getElementById('overview').innerHTML = [
+    card('Contatos ativos', number(data.contacts.optedIn)),
+    card('Descadastrados', number(data.contacts.optedOut)),
+    card('Sem WhatsApp', number(data.contacts.invalidWhatsApp)),
+    card('Campanhas em andamento', number(data.campaigns.running)),
+    card('Mensagens enviadas', number((data.messages.sent || 0) + (data.messages.delivered || 0) + (data.messages.read || 0))),
+    card('Entregues', number((data.messages.delivered || 0) + (data.messages.read || 0))),
+    card('Lidas', number(data.messages.read)),
+    card('Falhas', number(data.messages.failed)),
+    card('Destinatários hoje', `${number(data.today.uniqueRecipients)}${data.today.limit ? ' / ' + number(data.today.limit) : ''}`, 'sm'),
+    card('Respostas recebidas', number(data.inbound)),
+  ].join('');
+}
+
+function renderEngine(status) {
+  document.getElementById('engine').innerHTML = [
+    card('Na fila', number(status.pendingMessages)),
+    card('Ritmo atual', status.rate.currentRate + ' msg/s', 'sm'),
+    card('Ritmo nominal', status.rate.nominalRate + ' msg/s', 'sm'),
+    card('Concorrência', status.concurrency),
+    card('Enviadas na sessão', number(status.totals.sent)),
+    card('Throttles da Meta', number(status.totals.throttles)),
+  ].join('');
+
+  const dot = document.getElementById('engine-dot');
+  dot.className = 'status-dot ' + (status.running ? 'on' : 'off');
+  document.getElementById('engine-label').textContent = status.running ? 'motor rodando' : 'motor parado';
+  document.getElementById('btn-toggle').textContent = status.running ? 'Parar motor' : 'Iniciar motor';
+  document.getElementById('btn-toggle').dataset.running = status.running;
+  const rate = document.getElementById('rate');
+  if (document.activeElement !== rate) rate.value = status.rate.nominalRate;
+}
+
+function progressBar(stats) {
+  const total = stats.total || 1;
+  const part = (n, color) => (n > 0 ? `<span style="width:${(n / total) * 100}%;background:${color}"></span>` : '');
+  return `<div class="bar">
+    ${part((stats.delivered || 0) + (stats.read || 0), 'var(--accent)')}
+    ${part(stats.sent, 'var(--info)')}
+    ${part(stats.failed, 'var(--danger)')}
+    ${part((stats.skipped || 0) + (stats.cancelled || 0), 'var(--muted)')}
+  </div><span class="muted">${number(stats.processed)} / ${number(stats.total)}</span>`;
+}
+
+function renderCampaigns(data) {
+  const body = document.getElementById('campaigns');
+  if (!data.items.length) {
+    body.innerHTML = '<tr><td colspan="8" class="muted">Nenhuma campanha ainda. Crie uma pela API ou pelo CLI.</td></tr>';
+    return;
+  }
+  body.innerHTML = data.items.map((campaign) => {
+    const running = ['running', 'queued'].includes(campaign.status);
+    const actions = [];
+    if (['draft', 'paused'].includes(campaign.status)) actions.push(`<button data-action="start" data-id="${campaign.id}" class="primary">Disparar</button>`);
+    if (running) actions.push(`<button data-action="pause" data-id="${campaign.id}">Pausar</button>`);
+    if (campaign.stats.failed > 0) actions.push(`<button data-action="retry-failed" data-id="${campaign.id}">Reenviar falhas</button>`);
+    return `<tr>
+      <td class="muted">${campaign.id}</td>
+      <td>${escapeHtml(campaign.name)}</td>
+      <td><span class="pill ${campaign.status}">${campaign.status}</span></td>
+      <td class="muted">${escapeHtml(campaign.template_name || campaign.message_type)}</td>
+      <td style="min-width:150px">${progressBar(campaign.stats)}</td>
+      <td>${number(campaign.stats.deliveredTotal)}</td>
+      <td>${number(campaign.stats.failed)}</td>
+      <td><div class="row">${actions.join('') || '<span class="muted">—</span>'}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function escapeHtml(text) {
+  return String(text ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+async function refresh() {
+  try {
+    const [health, overview, dispatcher, campaigns] = await Promise.all([
+      api('/health'), api('/overview'), api('/dispatcher'), api('/campaigns?limit=50'),
+    ]);
+    renderAlerts(health);
+    renderOverview(overview);
+    renderEngine(dispatcher);
+    renderCampaigns(campaigns);
+  } catch (error) {
+    document.getElementById('alerts').innerHTML = `<div class="alert">Erro ao carregar: ${escapeHtml(error.message)}${apiKey ? '' : ' — se a API exige chave, abra o painel com <code>?key=SUA_CHAVE</code>.'}</div>`;
+  }
+}
+
+document.getElementById('btn-refresh').onclick = refresh;
+document.getElementById('btn-toggle').onclick = async (event) => {
+  const running = event.target.dataset.running === 'true';
+  await api(running ? '/dispatcher/stop' : '/dispatcher/start', { method: 'POST' });
+  refresh();
+};
+document.getElementById('btn-rate').onclick = async () => {
+  await api('/dispatcher/rate', { method: 'POST', body: JSON.stringify({ rate_per_second: Number(document.getElementById('rate').value) }) });
+  refresh();
+};
+document.getElementById('campaigns').onclick = async (event) => {
+  const button = event.target.closest('button[data-action]');
+  if (!button) return;
+  button.disabled = true;
+  try {
+    await api(`/campaigns/${button.dataset.id}/${button.dataset.action}`, { method: 'POST' });
+  } finally {
+    refresh();
+  }
+};
+
+refresh();
+setInterval(refresh, 4000);
+</script>
+</body>
+</html>

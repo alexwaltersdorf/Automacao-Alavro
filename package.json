@@ -1,0 +1,32 @@
+{
+  "name": "automacao-alavro",
+  "version": "1.0.0",
+  "description": "Sistema de envio de mensagens em massa pelo WhatsApp usando a API oficial da Meta (WhatsApp Cloud API)",
+  "type": "module",
+  "main": "src/server/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node src/server/index.js",
+    "dev": "node --watch src/server/index.js",
+    "cli": "node src/cli.js",
+    "migrate": "node src/db/migrate.js",
+    "test": "node --test \"tests/**/*.test.js\""
+  },
+  "keywords": [
+    "whatsapp",
+    "cloud-api",
+    "meta",
+    "bulk-messaging",
+    "disparo-em-massa"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "commander": "^13.1.0",
+    "csv-parse": "^5.6.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
