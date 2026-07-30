@@ -12,7 +12,7 @@
     "dev": "node --watch src/server/index.js",
     "cli": "node src/cli.js",
     "migrate": "node src/db/migrate.js",
-    "test": "node --test \"tests/**/*.test.js\""
+    "test": "node --test tests/*.test.js"
   },
   "keywords": [
     "whatsapp",

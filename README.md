@@ -417,6 +417,11 @@ erros da Meta, token bucket, motor de disparo com a Graph API mockada
 janela de 24h), validação HMAC dos webhooks, ciclo de status de entrega,
 opt-out automático, importação de CSV e a API HTTP ponta a ponta.
 
+O script usa `tests/*.test.js` — glob de um nível só, expandido pelo shell,
+porque o Node 20 não interpreta `**` sozinho (isso só chegou no Node 22).
+**Mantenha os arquivos de teste direto em `tests/`**: um teste dentro de
+subpasta não seria executado e o CI passaria sem avisar.
+
 ---
 
 ## Variáveis de ambiente
