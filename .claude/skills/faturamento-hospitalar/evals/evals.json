@@ -1,0 +1,41 @@
+{
+  "skill_name": "faturamento-hospitalar",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "preciso saber se a tabela SIGTAP mudou esse mês — qual é a competência vigente e onde baixo o arquivo oficial pra atualizar meu banco?",
+      "expected_output": "Identifica a competência vigente do SIGTAP consultando a fonte oficial do DATASUS, informa o link/mecanismo de download oficial (arquivos por competência) e orienta a atualização, citando URLs verificadas.",
+      "assertions": [
+        "Informa a competência SIGTAP vigente correta, verificada na fonte e não de memória",
+        "Cita o nome exato do arquivo oficial da competência (TabelaUnificada_AAAAMM_v...zip)",
+        "Indica o mecanismo oficial de descoberta (feed RSS competencias.rss ou portal sigtap.datasus.gov.br)",
+        "Fornece caminho de download funcional e distingue espelho comunitário de fonte oficial (sem inventar URLs)"
+      ],
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "qual a versão vigente do padrão TISS da ANS hoje? me traz o link oficial das tabelas TUSS de procedimentos e materiais atualizadas, vou parametrizar o sistema de faturamento",
+      "expected_output": "Consulta a página oficial do Padrão TISS na ANS, informa a versão vigente com data, e entrega links oficiais das tabelas TUSS (tab 22 procedimentos, tab 19 materiais/OPME), verificados de fato.",
+      "assertions": [
+        "Informa a versão vigente correta do Padrão TISS, verificada na página da ANS",
+        "Entrega o link real e funcional do ZIP TUSS vigente (ans.gov.br/arquivos/extras/tiss/..._AAAAMM.zip)",
+        "Identifica que o ZIP contém as tabelas pedidas (TUSS 22 procedimentos e TUSS 19 materiais/OPME)",
+        "Dá informação operacional útil para parametrização (tamanho ~400MB, alternativa OCL, ou datas de vigência/prazo)"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "a operadora tá pagando medicamento abaixo do que cobramos. preciso da lista de preços CMED mais recente (PF e PMC) direto da fonte oficial pra conferir os tetos",
+      "expected_output": "Localiza na ANVISA/CMED a lista de preços vigente (PF/PMC), informa data de publicação, formato e link oficial de download verificado, e explica como usar PF/PMC na conferência.",
+      "assertions": [
+        "Aponta a página oficial correta da CMED na ANVISA (gov.br/anvisa/.../cmed/precos)",
+        "Identifica a edição vigente da lista com data de publicação, obtida da fonte",
+        "Entrega link de download real do XLSX vigente (xls_conformidade_site_...)",
+        "Explica corretamente como usar PF/PMC na conferência (PF para hospitalar, coluna de ICMS, restrição hospitalar sem PMC)"
+      ],
+      "files": []
+    }
+  ]
+}
