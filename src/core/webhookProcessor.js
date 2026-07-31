@@ -105,7 +105,13 @@ function applyStatus(status, db) {
   const wamid = status.id;
   if (!wamid) return;
 
-  const message = db.prepare('SELECT * FROM messages WHERE wamid = ?').get(wamid);
+  // A mensagem pode ser de campanha ou avulsa — as duas recebem status da Meta.
+  let table = 'messages';
+  let message = db.prepare('SELECT * FROM messages WHERE wamid = ?').get(wamid);
+  if (!message) {
+    message = db.prepare('SELECT * FROM direct_messages WHERE wamid = ?').get(wamid);
+    table = 'direct_messages';
+  }
   if (!message) {
     log.debug('status recebido para mensagem desconhecida', { wamid, status: status.status });
     return;
@@ -116,7 +122,7 @@ function applyStatus(status, db) {
   if (status.status === 'failed') {
     const error = status.errors?.[0] ?? {};
     db.prepare(
-      `UPDATE messages
+      `UPDATE ${table}
           SET status = 'failed', failed_at = ?, error_code = ?, error_title = ?, error_detail = ?, updated_at = ?
         WHERE id = ?`,
     ).run(
@@ -140,7 +146,7 @@ function applyStatus(status, db) {
 
   const column = { delivered: 'delivered_at', read: 'read_at', sent: 'sent_at' }[status.status];
   db.prepare(
-    `UPDATE messages SET status = ?, ${column} = COALESCE(${column}, ?), updated_at = ? WHERE id = ?`,
+    `UPDATE ${table} SET status = ?, ${column} = COALESCE(${column}, ?), updated_at = ? WHERE id = ?`,
   ).run(status.status, timestamp, nowIso(), message.id);
 }
 

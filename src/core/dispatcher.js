@@ -12,6 +12,7 @@ import {
 import { RateLimiter } from './rateLimiter.js';
 import { CAMPAIGN_STATUS, setStatus, getCampaignStats } from './campaigns.js';
 import { getContactById, isWithin24hWindow, markInvalidWhatsApp } from './contacts.js';
+import { pairRateWaitMs, recordRecipientSend, reserveDailySlot } from './limits.js';
 
 const log = logger.child({ module: 'dispatcher' });
 
@@ -385,50 +386,18 @@ export class Dispatcher {
       .run(nextAttemptAt, nowIso(), message.id);
   }
 
-  /**
-   * Quanto falta esperar antes de poder mandar outra mensagem a este número.
-   * @returns {number} milissegundos (0 = pode enviar agora)
-   */
+  /** Quanto falta esperar antes de poder mandar outra mensagem a este número. */
   pairRateWaitMs(phone) {
-    if (!this.perRecipientIntervalMs || this.perRecipientIntervalMs <= 0) return 0;
-
-    const row = this.db.prepare('SELECT last_sent_at FROM recipient_throttle WHERE phone_e164 = ?').get(phone);
-    if (!row) return 0;
-
-    const elapsed = Date.now() - new Date(row.last_sent_at).getTime();
-    if (Number.isNaN(elapsed) || elapsed < 0) return 0;
-    return Math.max(0, this.perRecipientIntervalMs - elapsed);
+    return pairRateWaitMs(phone, this.perRecipientIntervalMs, this.db);
   }
 
   recordRecipientSend(phone) {
-    this.db
-      .prepare(
-        `INSERT INTO recipient_throttle (phone_e164, last_sent_at) VALUES (?, ?)
-         ON CONFLICT (phone_e164) DO UPDATE SET last_sent_at = excluded.last_sent_at`,
-      )
-      .run(phone, nowIso());
+    recordRecipientSend(phone, this.db);
   }
 
-  /**
-   * Reserva uma vaga no teto diário de destinatários únicos do tier da Meta.
-   * Reenvio para um número já contabilizado hoje não consome nova vaga.
-   */
+  /** Reserva uma vaga no teto diário de destinatários únicos do tier da Meta. */
   reserveDailySlot(phone) {
-    if (!this.dailyLimit || this.dailyLimit <= 0) return true;
-    const day = todayUtc();
-
-    const already = this.db
-      .prepare('SELECT 1 FROM daily_send_counter WHERE day = ? AND phone_e164 = ?')
-      .get(day, phone);
-    if (already) return true;
-
-    const { count } = this.db.prepare('SELECT COUNT(*) AS count FROM daily_send_counter WHERE day = ?').get(day);
-    if (count >= this.dailyLimit) return false;
-
-    this.db
-      .prepare('INSERT INTO daily_send_counter (day, phone_e164) VALUES (?, ?) ON CONFLICT DO NOTHING')
-      .run(day, phone);
-    return true;
+    return reserveDailySlot(phone, this.dailyLimit, this.db);
   }
 
   /** Marca a campanha como concluída quando não há mais nada pendente. */

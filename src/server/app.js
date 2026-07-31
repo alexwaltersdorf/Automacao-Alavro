@@ -6,6 +6,7 @@ import webhookRouter from './routes/webhook.js';
 import contactsRouter from './routes/contacts.js';
 import campaignsRouter from './routes/campaigns.js';
 import templatesRouter from './routes/templates.js';
+import messagesRouter from './routes/messages.js';
 import analyticsRouter from './routes/analytics.js';
 import systemRouter from './routes/system.js';
 
@@ -27,6 +28,7 @@ export function createApp() {
   app.use('/api/contacts', contactsRouter);
   app.use('/api/campaigns', campaignsRouter);
   app.use('/api/templates', templatesRouter);
+  app.use('/api/messages', messagesRouter);
   app.use('/api/analytics', analyticsRouter);
   app.use('/api', systemRouter);
 

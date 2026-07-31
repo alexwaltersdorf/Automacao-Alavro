@@ -125,6 +125,34 @@ CREATE TABLE IF NOT EXISTS daily_send_counter (
   PRIMARY KEY (day, phone_e164)
 );
 
+-- Mensagens avulsas (fora de campanha) ---------------------------------------
+-- Tabela separada de `messages` de propósito: ali vale UNIQUE (campanha,
+-- contato) para garantir idempotência do disparo em massa, enquanto aqui
+-- reenviar para o mesmo número é legítimo (confirmação, atendimento, teste).
+-- status: sent | delivered | read | failed
+CREATE TABLE IF NOT EXISTS direct_messages (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  contact_id   INTEGER REFERENCES contacts(id) ON DELETE SET NULL,
+  phone_e164   TEXT    NOT NULL,
+  type         TEXT    NOT NULL,   -- template | text
+  status       TEXT    NOT NULL DEFAULT 'sent',
+  wamid        TEXT,
+  source       TEXT,               -- api | cli
+  payload      TEXT,
+  error_code   INTEGER,
+  error_title  TEXT,
+  error_detail TEXT,
+  sent_at      TEXT,
+  delivered_at TEXT,
+  read_at      TEXT,
+  failed_at    TEXT,
+  created_at   TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at   TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_direct_messages_wamid ON direct_messages(wamid);
+CREATE INDEX IF NOT EXISTS idx_direct_messages_phone ON direct_messages(phone_e164);
+
 -- Pair rate limit: último envio para cada destinatário -----------------------
 -- A Meta permite 1 mensagem a cada 6 segundos para o MESMO usuário
 -- (~10/min, 600/h). Ultrapassar dispara o erro 131056.

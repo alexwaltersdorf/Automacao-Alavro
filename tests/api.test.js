@@ -244,3 +244,44 @@ test('respostas vêm da mais recente para a mais antiga', async () => {
     assert.deepEqual(datas, ordenado);
   });
 });
+
+// --- POST /api/messages -----------------------------------------------------
+
+test('POST /api/messages recusa quando faltam credenciais da Meta', async () => {
+  await comServidor(async (request) => {
+    // Neste ambiente de teste WHATSAPP_ACCESS_TOKEN não está definido.
+    const { status, body } = await request('/api/messages', {
+      method: 'POST',
+      body: JSON.stringify({ to: '11987654321', template: { name: 'promo' } }),
+    });
+    assert.equal(status, 503, 'diz que falta configurar, em vez de falhar na Meta');
+    assert.ok(body.missing.includes('WHATSAPP_ACCESS_TOKEN'));
+  });
+});
+
+test('POST /api/messages exige o destinatário', async () => {
+  await comServidor(async (request) => {
+    const { status, body } = await request('/api/messages', {
+      method: 'POST',
+      body: JSON.stringify({ text: 'oi' }),
+    });
+    assert.equal(status, 400);
+    assert.match(body.error, /to é obrigatório/);
+  });
+});
+
+test('GET /api/messages lista o histórico de avulsas', async () => {
+  await comServidor(async (request) => {
+    const { status, body } = await request('/api/messages');
+    assert.equal(status, 200);
+    assert.ok(Array.isArray(body.items));
+    assert.equal(typeof body.total, 'number');
+  });
+});
+
+test('GET /api/messages/:id devolve 404 para id inexistente', async () => {
+  await comServidor(async (request) => {
+    const { status } = await request('/api/messages/999999');
+    assert.equal(status, 404);
+  });
+});

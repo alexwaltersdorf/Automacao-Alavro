@@ -237,6 +237,56 @@ assinatura HMAC da própria Meta.
 | `GET` | `/api/campaigns/:id/messages` | Mensagens (`?status=failed`) |
 | `GET` | `/api/campaigns/:id/report.csv` | Relatório em CSV |
 
+### Mensagens avulsas (fora de campanha)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/messages` | Envia uma mensagem única |
+| `GET` | `/api/messages` | Histórico (`?status=`, `?phone=`) |
+| `GET` | `/api/messages/:id` | Situação, atualizada pelos webhooks de entrega |
+
+Para integrar com site, n8n, CRM — ou só validar as credenciais.
+
+```bash
+# Template: inicia conversa. Exige template aprovado na Meta.
+curl -X POST localhost:3000/api/messages -H 'Content-Type: application/json' -d '{
+  "to": "(11) 98765-4321",
+  "type": "template",
+  "template": {
+    "name": "promocao_julho",
+    "language": "pt_BR",
+    "components": { "body": ["{{name}}", "Caraguatatuba"] }
+  }
+}'
+
+# Texto livre: só para quem respondeu nas últimas 24h.
+curl -X POST localhost:3000/api/messages -H 'Content-Type: application/json' \
+  -d '{"to": "5511987654321", "type": "text", "text": "Seu exame está pronto!"}'
+```
+
+**Aplica as mesmas travas do disparo em massa** — opt-out, janela de 24h,
+intervalo por destinatário e teto diário do tier. Um endpoint que pulasse essas
+regras seria um buraco no resto do sistema: o descadastro deixaria de valer e a
+contabilidade do tier ficaria errada.
+
+Cada recusa vem com um `reason` estável, para tratar por código em vez de
+comparar texto:
+
+| `reason` | HTTP | Significa |
+|---|---|---|
+| `invalid_phone` | 400 | Telefone não normalizável para E.164 |
+| `missing_template` / `missing_text` | 400 | Falta o conteúdo do tipo escolhido |
+| `opted_out` | 409 | O contato pediu para não receber |
+| `window_closed` | 409 | Texto livre fora da janela de 24h — use template |
+| `pair_rate_limit` | 429 | 1 msg a cada 6s por destinatário (traz `Retry-After`) |
+| `daily_limit` | 429 | Teto de destinatários únicos do dia |
+
+`ignore_opt_out: true` força o envio a quem se descadastrou. Existe para
+mensagem **transacional que o próprio cliente pediu** (confirmação de
+agendamento, resultado de exame). Usar isso para marketing viola a política da
+Meta e derruba a qualidade do número — o sistema registra um aviso no log toda
+vez que o parâmetro é usado.
+
 ### Templates e sistema
 
 | Método | Rota | Descrição |
@@ -433,6 +483,8 @@ src/
 │   └── messages.js         Construtores de payload e interpolação
 ├── core/
 │   ├── contacts.js         Contatos, listas, opt-in/out, janela de 24h
+│   ├── directMessages.js   Envio avulso, fora de campanha
+│   ├── limits.js           Limites da Meta comuns a todo envio
 │   ├── campaigns.js        Campanhas e fila idempotente
 │   ├── dispatcher.js       Motor de disparo
 │   ├── rateLimiter.js      Token bucket com recuo dinâmico
@@ -440,7 +492,7 @@ src/
 ├── server/
 │   ├── app.js              Express
 │   ├── middleware.js       Autenticação, logs, erros
-│   ├── routes/             contacts, campaigns, templates, analytics, system, webhook
+│   ├── routes/             contacts, campaigns, messages, templates, analytics, system, webhook
 │   └── public/index.html   Painel (abas: painel, campanhas, respostas)
 └── utils/
     ├── phone.js            E.164, nono dígito, DDD
@@ -478,13 +530,13 @@ Erro temporário volta para `pending` com `next_attempt_at` no futuro.
 npm test
 ```
 
-91 testes cobrindo normalização de telefones brasileiros, classificação dos
+109 testes cobrindo normalização de telefones brasileiros, classificação dos
 erros da Meta, token bucket, motor de disparo com a Graph API mockada
 (retentativa, throttle, pausa por token inválido, teto diário, idempotência,
 janela de 24h, pair rate limit), leitura da cota da Graph API, montagem das
 consultas de analytics, validação HMAC dos webhooks, ciclo de status de
-entrega, opt-out automático, importação de CSV, listagem de respostas e a API
-HTTP ponta a ponta.
+entrega, opt-out automático, importação de CSV, listagem de respostas, envio avulso
+(cada trava de recusa) e a API HTTP ponta a ponta.
 
 O painel também foi exercitado num navegador de verdade (Chromium via
 Playwright), percorrendo importar → escolher template → mapear variáveis →

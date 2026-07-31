@@ -38,10 +38,17 @@ export function errorHandler(error, _req, res, _next) {
   const status = error.status ?? error.httpStatus ?? 500;
   if (status >= 500) log.error('erro na requisição', { error: error.message, stack: error.stack });
 
+  // Quando a recusa é por tempo (limite por destinatário), diz quando tentar de novo.
+  if (error.retryAfterMs) res.setHeader('Retry-After', Math.ceil(error.retryAfterMs / 1000));
+
   res.status(status).json({
-    error: error.title ?? 'erro ao processar a requisição',
+    error: error.title ?? error.message ?? 'erro ao processar a requisição',
     detail: error.detail ?? error.message,
     code: error.code ?? null,
+    // Identificador estável do motivo, para quem integra tratar por código
+    // em vez de comparar texto.
+    reason: error.reason ?? null,
+    ...(error.retryAfterMs ? { retry_after_ms: error.retryAfterMs } : {}),
   });
 }
 
