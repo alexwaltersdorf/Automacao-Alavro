@@ -4,6 +4,7 @@ import { asyncHandler } from '../middleware.js';
 import { getClient } from '../../whatsapp/client.js';
 import { getDispatcher } from '../../core/dispatcher.js';
 import { getDb, nowIso, todayUtc } from '../../db/index.js';
+import { isWithin24hWindow } from '../../core/contacts.js';
 
 const router = express.Router();
 
@@ -70,6 +71,38 @@ router.get(
     res.json(result);
   }),
 );
+
+/**
+ * Respostas recebidas dos contatos.
+ * Numa campanha de disparo é aqui que aparece o retorno — e cada resposta
+ * abre a janela de 24h para conversar por texto livre com aquele contato.
+ */
+router.get('/inbound', (req, res) => {
+  const limit = Math.min(Number(req.query.limit) || 50, 500);
+  const offset = Number(req.query.offset) || 0;
+  const db = getDb();
+
+  const items = db
+    .prepare(
+      `SELECT i.id, i.wamid, i.from_wa_id, i.profile_name, i.type, i.body, i.received_at,
+              c.id AS contact_id, c.name AS contact_name, c.phone_e164, c.opted_in,
+              c.last_inbound_at
+         FROM inbound_messages i
+         LEFT JOIN contacts c ON c.id = i.contact_id
+        ORDER BY i.received_at DESC, i.id DESC
+        LIMIT ? OFFSET ?`,
+    )
+    .all(limit, offset)
+    .map((row) => ({
+      ...row,
+      opted_in: row.opted_in === null ? null : Boolean(row.opted_in),
+      // A janela de 24h só está aberta se a última mensagem recebida for recente.
+      window_open: isWithin24hWindow({ last_inbound_at: row.last_inbound_at }),
+    }));
+
+  const { total } = db.prepare('SELECT COUNT(*) AS total FROM inbound_messages').get();
+  res.json({ total, items });
+});
 
 /** Números métricos gerais para o painel. */
 router.get('/overview', (_req, res) => {

@@ -192,3 +192,55 @@ test('rota inexistente devolve 404 em JSON', async () => {
     assert.equal(body.error, 'rota não encontrada');
   });
 });
+
+test('lista as respostas recebidas com a situação da janela de 24h', async () => {
+  await comServidor(async (request) => {
+    const criado = await request('/api/contacts', {
+      method: 'POST',
+      body: JSON.stringify({ phone: '11944443333', name: 'Quem Respondeu' }),
+    });
+
+    const { getDb } = await import('../src/db/index.js');
+    const db = getDb();
+
+    // Uma resposta recente (janela aberta) e uma antiga (janela fechada).
+    db.prepare(
+      `INSERT INTO inbound_messages (wamid, contact_id, from_wa_id, profile_name, type, body, received_at)
+       VALUES (?, ?, ?, ?, 'text', ?, ?)`,
+    ).run('wamid.IN1', criado.body.id, '5511944443333', 'Quem Respondeu', 'Quero saber o preço', new Date().toISOString());
+    db.prepare('UPDATE contacts SET last_inbound_at = ? WHERE id = ?').run(new Date().toISOString(), criado.body.id);
+
+    const antigo = await request('/api/contacts', {
+      method: 'POST',
+      body: JSON.stringify({ phone: '11933332222', name: 'Antigo' }),
+    });
+    const trintaHorasAtras = new Date(Date.now() - 30 * 60 * 60 * 1000).toISOString();
+    db.prepare(
+      `INSERT INTO inbound_messages (wamid, contact_id, from_wa_id, type, body, received_at)
+       VALUES (?, ?, ?, 'text', ?, ?)`,
+    ).run('wamid.IN2', antigo.body.id, '5511933332222', 'oi', trintaHorasAtras);
+    db.prepare('UPDATE contacts SET last_inbound_at = ? WHERE id = ?').run(trintaHorasAtras, antigo.body.id);
+
+    const { status, body } = await request('/api/inbound');
+    assert.equal(status, 200);
+    assert.ok(body.total >= 2);
+
+    const recente = body.items.find((item) => item.wamid === 'wamid.IN1');
+    assert.equal(recente.window_open, true, 'resposta de agora mantém a janela aberta');
+    assert.equal(recente.body, 'Quero saber o preço');
+    assert.equal(recente.contact_name, 'Quem Respondeu');
+    assert.equal(recente.opted_in, true);
+
+    const velho = body.items.find((item) => item.wamid === 'wamid.IN2');
+    assert.equal(velho.window_open, false, 'resposta de 30h atrás já fechou a janela');
+  });
+});
+
+test('respostas vêm da mais recente para a mais antiga', async () => {
+  await comServidor(async (request) => {
+    const { body } = await request('/api/inbound?limit=10');
+    const datas = body.items.map((item) => new Date(item.received_at).getTime());
+    const ordenado = [...datas].sort((a, b) => b - a);
+    assert.deepEqual(datas, ordenado);
+  });
+});

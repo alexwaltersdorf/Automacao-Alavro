@@ -21,7 +21,7 @@ passa pelo canal autorizado da Meta, com token permanente de Usuário do Sistema
 | **Analytics da Meta** | Volume de mensagens, custo por conversa e desempenho por template |
 | **Importação CSV** | Vírgula ou ponto e vírgula, BOM do Excel, colunas em português, campos extras viram variáveis |
 | **Telefones brasileiros** | Normalização E.164 com nono dígito, validação de DDD, casamento do `wa_id` do webhook |
-| **Painel web** | Métricas em tempo real, progresso das campanhas, controle do motor |
+| **Painel web** | Fluxo completo sem terminal: importar CSV, criar campanha, conferir o público, disparar e ler as respostas |
 | **API REST + CLI** | Automação por HTTP ou pelo terminal |
 
 ---
@@ -112,6 +112,22 @@ npm start           # sobe o servidor + painel em http://localhost:3000
 ---
 
 ## Parte 3 — Disparar a primeira campanha
+
+### Pelo painel (sem terminal)
+
+Abra `http://localhost:3000` e faça tudo pelo navegador:
+
+1. **Importar contatos** — cole o CSV ou escolha o arquivo, informe o nome da lista.
+2. **Nova campanha** — dê um nome, escolha a lista e o template aprovado.
+   Clique em **Sincronizar** se a lista de templates estiver vazia.
+3. O painel lê os `{{1}}`, `{{2}}`… do template aprovado e pede um valor para
+   cada um. Use `{{name}}`, `{{phone}}` ou qualquer coluna do seu CSV.
+4. **Criar e conferir público** — mostra quantos vão receber e quantos ficaram
+   de fora (descadastrados, sem WhatsApp). **Nada foi enviado ainda.**
+5. **Disparar** — só a partir daqui as mensagens saem.
+
+A aba **Respostas** mostra quem respondeu e se a janela de 24h daquele contato
+está aberta. Os passos abaixo são os mesmos, pelo terminal.
 
 ### 3.1 Criar e aprovar o template
 
@@ -230,6 +246,7 @@ assinatura HMAC da própria Meta.
 | `POST` | `/api/templates` | Cria um template (entra em análise) |
 | `GET` | `/api/health` | Saúde e credenciais faltando |
 | `GET` | `/api/overview` | Métricas gerais |
+| `GET` | `/api/inbound` | Respostas recebidas, com a situação da janela de 24h |
 | `GET` | `/api/phone-number` | Qualidade e tier do número na Meta |
 | `GET` | `/api/dispatcher` | Estado do motor |
 | `POST` | `/api/dispatcher/start` \| `/stop` | Liga/desliga o motor |
@@ -424,7 +441,7 @@ src/
 │   ├── app.js              Express
 │   ├── middleware.js       Autenticação, logs, erros
 │   ├── routes/             contacts, campaigns, templates, analytics, system, webhook
-│   └── public/index.html   Painel
+│   └── public/index.html   Painel (abas: painel, campanhas, respostas)
 └── utils/
     ├── phone.js            E.164, nono dígito, DDD
     └── csv.js              Importação e exportação
@@ -461,12 +478,17 @@ Erro temporário volta para `pending` com `next_attempt_at` no futuro.
 npm test
 ```
 
-89 testes cobrindo normalização de telefones brasileiros, classificação dos
+91 testes cobrindo normalização de telefones brasileiros, classificação dos
 erros da Meta, token bucket, motor de disparo com a Graph API mockada
 (retentativa, throttle, pausa por token inválido, teto diário, idempotência,
 janela de 24h, pair rate limit), leitura da cota da Graph API, montagem das
 consultas de analytics, validação HMAC dos webhooks, ciclo de status de
-entrega, opt-out automático, importação de CSV e a API HTTP ponta a ponta.
+entrega, opt-out automático, importação de CSV, listagem de respostas e a API
+HTTP ponta a ponta.
+
+O painel também foi exercitado num navegador de verdade (Chromium via
+Playwright), percorrendo importar → escolher template → mapear variáveis →
+conferir o público → disparar.
 
 O script usa `tests/*.test.js` — glob de um nível só, expandido pelo shell,
 porque o Node 20 não interpreta `**` sozinho (isso só chegou no Node 22).
