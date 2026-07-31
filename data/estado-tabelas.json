@@ -1,0 +1,27 @@
+{
+  "sigtap": {
+    "chave": "TabelaUnificada_202607_v2607101010.zip",
+    "vigente": "Competência 07/2026",
+    "verificado_em": "2026-07-31"
+  },
+  "tiss": {
+    "chave": "2026-07|tuss:202607",
+    "vigente": "Padrão TISS Julho/2026 · TUSS 202607 (413 MB)",
+    "verificado_em": "2026-07-31"
+  },
+  "cmed": {
+    "chave": "20260721",
+    "vigente": "Listas PF/PMC/PMVG publicadas em 21/07/2026",
+    "verificado_em": "2026-07-31"
+  },
+  "rol": {
+    "chave": "Anexo_I_Rol_2021RN_465.2021_RN671.2026.L.xlsx",
+    "vigente": "Rol consolidado até RN 671/2026 (arquivo Anexo_I_Rol_2021RN_465.2021_RN671.2026.L.xlsx)",
+    "verificado_em": "2026-07-31"
+  },
+  "cbhpm": {
+    "chave": "rn:71|com:26|pdfs:104",
+    "vigente": "Edição 2022 · RN CNHM nº 71 · Comunicado nº 26 (reajuste anual de portes/UCO sai em outubro)",
+    "verificado_em": "2026-07-31"
+  }
+}
