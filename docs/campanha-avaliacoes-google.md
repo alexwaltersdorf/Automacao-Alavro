@@ -49,7 +49,10 @@ Enviar **uma única vez**, no mesmo dia do atendimento ou na entrega do resultad
 >
 > Aponte a câmera do celular para o QR code e deixe sua avaliação no Google — leva menos de 1 minuto.
 >
-> **Total Quality Medicina Diagnóstica — 21 anos cuidando de você.**
+> **Total Quality Medicina Diagnóstica — cuidando de você desde 2003.**
+>
+> *(Forma perene, alinhada ao site: nunca fixar o número de anos numa peça impressa —
+> a data de fundação é 08/07/2003 e o número muda sozinho a cada aniversário.)*
 >
 > ---
 > *[Razão social] — Registro CRM-SP nº [PREENCHER] · Diretor(a) técnico(a): Dr(a). [NOME] — CRM-SP [Nº]*
