@@ -30,34 +30,44 @@ Notas de apuração:
 
 ## Lacuna de dados desde 22/08/2026
 
-O conector Windsor.ai passou a devolver, no lugar dos dados:
+O conector Windsor.ai parou de devolver dados. A mensagem mudou de natureza no caminho,
+e isso muda a correção:
 
-> `Uh-oh! You've connected more accounts than your Free plan allows.`
+| Data | Mensagem do Windsor | O que limita |
+|---|---|---|
+| 22/08 a 02/09 | "more **accounts** than your **Free** plan allows" | nº de contas |
+| a partir de 03/09 | "more **data sources** than your **Basic** plan allows" | nº de **conectores** |
 
-São 14 contas conectadas para um plano que comporta 5. Desde 22/08 nenhuma leitura de
-Google Meu Negócio ou Search Console retorna valor — verificado de novo em 31/08, em
-`google_my_business` (impressões e avaliações) e em `searchconsole`. Consequências:
+O plano foi elevado para **Basic** (pago, conta `sac@totalquality.med.br`) e uma conta do
+Meta foi desconectada, mas o bloqueio persiste porque agora o que conta são as **fontes de
+dados**, não as contas dentro delas. Desconectar contas não resolve mais.
+
+São 5 conectores ligados hoje:
+
+| Conector | Para que serve aqui |
+|---|---|
+| `google_my_business` | rotina de resposta às avaliações + impressões do painel |
+| `searchconsole` | impressões, cliques e posição do site |
+| `google_ads` | dashboard diário de tráfego pago |
+| `facebook` | dashboard diário de tráfego pago |
+| `googleanalytics4` | sessões e conversões |
+
+**Decisão tomada em 03/09: priorizar `google_my_business`.** As avaliações são o ativo que
+já moveu o ponteiro (4,4★ → 4,5★, base crescendo ~26/mês) e o passivo sem resposta fica
+visível para qualquer paciente que abre o perfil. O gasto de mídia continua auditável no
+painel do próprio Google Ads, sem depender do Windsor.
+
+Consequência aceita: o **dashboard diário de tráfego pago (18h) para de atualizar** enquanto
+`google_ads` e `facebook` estiverem desconectados.
+
+Efeitos enquanto o bloqueio durar:
 
 - **Impressões, cliques e posição média** param na série que vai até 19/08.
 - **Contagem e nota das avaliações** param em 362 / 4,5★.
-- **A rotina diária de resposta às avaliações** dispara mas não enxerga nada — está sem
-  responder desde 22/08. No ritmo medido (~26 avaliações/mês), são cerca de 8 aguardando.
-
-Para destravar sem trocar de plano, manter apenas estas 5 contas no painel do Windsor
-(Connectors) e desconectar as outras 9:
-
-| Conector | Conta a manter |
-|---|---|
-| Google Meu Negócio | `locations/17072583008115284441` |
-| Google Ads | `920-715-3288` — Total Quality [ Caraguatatuba ] |
-| GA4 | `294418772` — totalqualitymedicina |
-| Meta | `427203942321758` — Total Quality |
-| Search Console | `sc-domain:totalquality.med.br` (cobre as duas variantes `www`) |
-
-Saem: as contas Meta que não são da clínica (Escola CTS, Instituto Ubatuba), a conta
-pessoal, a `598188890267975`, a duplicata "(Read-Only)", o Google Ads antigo
-`660-569-9690`, a propriedade GA4 `427367232` (0 sessões, já confirmado) e as duas
-propriedades `www` do Search Console.
+- **Rotina de resposta às avaliações** sem enxergar nada desde 22/08. No ritmo medido
+  (~26 avaliações/mês), são cerca de 12 aguardando. A rotina já está instruída a tratar a
+  primeira execução bem-sucedida como recuperação (varredura de 90 dias, 15 respostas/dia
+  das mais recentes para as mais antigas, até zerar).
 
 O Local Falcon (SoLV) exige autorização OAuth que não pode ser feita nesta sessão.
 
@@ -67,7 +77,7 @@ O Local Falcon (SoLV) exige autorização OAuth que não pode ser feita nesta se
 |---|---|---|
 | Perfil do Google (horário, site, telefone, descrição) | ✅ feito | via API |
 | Campanha de avaliações | ✅ rodando | 28 novas até 19/08, 100% 5★ |
-| Rotina de resposta às avaliações | 🔴 **parada desde 22/08** | conector Windsor no limite do plano |
+| Rotina de resposta às avaliações | 🔴 **parada desde 22/08** | limite de fontes de dados do plano Basic do Windsor |
 | Posts por prioridade (laboratorial → ultrassom → tomografia) | ✅ concluído | 12, 15 e 18/08 |
 | **Categorias do perfil (7 → 3)** | ⚠️ **pendente** | só no painel do GBP; é a ação nº 1 |
 | Lista de Serviços no perfil | ⚠️ pendente | só no painel do GBP |
@@ -126,7 +136,8 @@ Permanece em aberto:
 
 Sequência para atualizar:
 
-1. Desconectar as 9 contas listadas em "Lacuna de dados" no painel do Windsor.
+1. No painel do Windsor (Connectors), deixar apenas `google_my_business` conectado —
+   ver "Lacuna de dados" acima. O limite do plano Basic é por fonte de dados, não por conta.
 2. Puxar do conector `google_my_business` os campos `date, impressions` (série diária) e
    `review_create_time, review_star_rating, review_total_count, review_average_rating`.
 3. Recalcular os agregados semanais e a série acumulada de avaliações.
