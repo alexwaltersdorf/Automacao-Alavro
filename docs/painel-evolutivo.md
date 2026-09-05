@@ -4,87 +4,124 @@ Painel publicado (privado, compartilhável pelo menu da própria página):
 **https://claude.ai/code/artifact/806752bc-e882-4c16-9dec-9c181dc82ea0**
 
 Gerado em 19/08/2026 · dados de 01/06/2026 a 19/08/2026.
-**Última verificação: 31/08/2026** — os números de tráfego e avaliações seguem os de
-19/08 (ver "Lacuna de dados" abaixo); o bloco técnico foi remedido hoje.
+**Última atualização de dados: 05/09/2026** — o Windsor foi destravado em 05/09 e a série
+foi refeita até 01/09. O bloco técnico foi remedido em 31/08.
 
 ---
 
-## Números do painel (fonte e apuração) — congelados em 19/08/2026
+## Números do painel (fonte e apuração) — dados de 05/09/2026
 
-| Indicador | Valor | Fonte |
-|---|---|---|
-| Avaliações totais | 362 (4,5★) | GBP via Windsor — `review_total_count` |
-| Avaliações novas na campanha (29/07–19/08) | 28, todas 5★ | GBP — `review_create_time` + `review_star_rating` |
-| Taxa de resposta | 100% em até 24h | rotina diária automatizada desde 30/07 |
-| Impressões/dia — antes (01–28/07) | 118,7 | GBP — `impressions` diário |
-| Impressões/dia — durante (29/07–14/08) | 142,5 (**+20,0%**) | idem |
-| Melhor semana de impressões | 1.073 (semana de 10/08) | idem |
-| SoLV “laboratório” | 0,4% (fev) → 2,0% (mai) → 3,9% (ago) | Local Falcon, grade 7×7 |
+| Indicador | 19/08 | 05/09 | Fonte |
+|---|---|---|---|
+| Avaliações totais | 362 | **409** (+47) | GBP — `review_total_count` |
+| Avaliações sem resposta | — | **0** | varredura de 90 dias em 05/09 |
+| Impressões/dia — base (07–28/07) | 118,7 | 116,5 | GBP — `impressions` diário |
+| Impressões/dia — campanha (29/07–19/08) | 142,5 | **144,9** (+24,4% sobre a base) | idem |
+| Impressões/dia — pós (20/08–01/09) | — | 134,5 | idem |
+| Melhor semana | 1.073 | **1.168** (semana de 10/08) | idem |
+| SoLV "laboratório" | 3,9% (ago) | sem medição nova | Local Falcon, grade 7×7 |
+
+Totais semanais de impressões:
+
+| Semana (seg) | Impressões |
+|---|---:|
+| 06/07 | 579 *(série começa em 07/07, semana parcial)* |
+| 13/07 | 845 |
+| 20/07 | 827 |
+| 27/07 | 819 |
+| 03/08 | 842 |
+| **10/08** | **1.168** |
+| **17/08** | **1.154** |
+| **24/08** | **1.018** |
+| 31/08 | 248 *(parcial — ver nota)* |
+
+O patamar mudou: as três semanas de 10, 17 e 24 de agosto ficaram acima de 1.000, contra
+uma faixa de 819–845 nas quatro semanas anteriores. Não é um pico isolado, é um degrau.
+
+### Cuidado ao ler `review_average_rating`
+
+Esse campo **não é a nota exibida no perfil** — é a média das avaliações *dentro da janela
+consultada*, e muda conforme a janela:
+
+| Janela | `review_average_rating` |
+|---|---|
+| últimos 30 dias | 4,962 |
+| últimos 90 dias | 4,893 |
+| últimos 2 anos | 4,726 |
+
+Ou seja: mede a **qualidade do fluxo recente**, que está ótima (praticamente só 5★
+entrando). A nota vitalícia que o Google mostra no perfil é outra coisa e sobe devagar,
+porque o denominador são as 409 avaliações. Nunca reportar 4,9 como "a nota da clínica" —
+o último valor confirmado da nota exibida é 4,5.
 
 Notas de apuração:
-- A semana de 17/08 fica fora do gráfico de impressões: o Google consolida essas
-  métricas com 3–5 dias de atraso e os valores ainda chegam zerados.
-- Os três SoLV vêm de scans com raios diferentes (25 km em ago, menores antes), então
-  servem como referência de ordem de grandeza, não como série temporal exata. Para a
-  medição da meta de 90 dias, usar sempre a mesma grade e o mesmo raio.
+- Os dias 02, 03 e 04/09 vêm zerados: o Google consolida essas métricas com 3–5 dias de
+  atraso. Por isso a semana de 31/08 aparece com 248 — só 31/08 e 01/09 têm dado.
+- Os SoLV vêm de scans com raios diferentes. Para medir a meta de 90 dias, usar sempre a
+  mesma grade 7×7 e o mesmo raio de 25 km.
 
-## Lacuna de dados desde 22/08/2026
+## Apagão de dados 22/08 – 05/09 (encerrado)
 
-O conector Windsor.ai parou de devolver dados. A mensagem mudou de natureza no caminho,
-e isso muda a correção:
+O Windsor.ai ficou 14 dias sem devolver dado nenhum. A mensagem mudou de natureza no meio
+do caminho, e a distinção custou tempo — vale registrar para não repetir:
 
-| Data | Mensagem do Windsor | O que limita |
+| Período | Mensagem | O que realmente limitava |
 |---|---|---|
-| 22/08 a 02/09 | "more **accounts** than your **Free** plan allows" | nº de contas |
-| a partir de 03/09 | "more **data sources** than your **Basic** plan allows" | nº de **conectores** |
+| 22/08 – 02/09 | "more **accounts** than your **Free** plan allows" | nº de contas |
+| 03/09 – 05/09 | "more **data sources** than your **Basic** plan allows" | nº de **conectores** |
 
-O plano foi elevado para **Basic** (pago, conta `sac@totalquality.med.br`) e uma conta do
-Meta foi desconectada, mas o bloqueio persiste porque agora o que conta são as **fontes de
-dados**, não as contas dentro delas. Desconectar contas não resolve mais.
+Remover contas dentro de um conector não adiantou: o plano Basic conta **fontes de dados**.
+Destravou em 05/09 ao desconectar `googleanalytics4` e `searchconsole`, deixando 3
+conectores (`google_my_business`, `google_ads`, `facebook`).
 
-São 5 conectores ligados hoje:
+A chave da API REST (`connectors.windsor.ai`) **não contorna** o bloqueio — o limite é
+aplicado na conta, não no caminho de acesso. Testado em 03/09.
 
-| Conector | Para que serve aqui |
-|---|---|
-| `google_my_business` | rotina de resposta às avaliações + impressões do painel |
-| `searchconsole` | impressões, cliques e posição do site |
-| `google_ads` | dashboard diário de tráfego pago |
-| `facebook` | dashboard diário de tráfego pago |
-| `googleanalytics4` | sessões e conversões |
+Custo do apagão: 14 dias sem série de impressões e sem resposta a avaliações. O passivo foi
+zerado na volta — varredura de 90 dias em 05/09 não achou nenhuma avaliação sem resposta.
 
-**Decisão tomada em 03/09: priorizar `google_my_business`.** As avaliações são o ativo que
-já moveu o ponteiro (4,4★ → 4,5★, base crescendo ~26/mês) e o passivo sem resposta fica
-visível para qualquer paciente que abre o perfil. O gasto de mídia continua auditável no
-painel do próprio Google Ads, sem depender do Windsor.
+Perda permanente: `searchconsole` saiu, então impressões, cliques e posição média do **site**
+deixam de ser coletados. O dashboard de tráfego pago mantém `google_ads` e `facebook`.
 
-Consequência aceita: o **dashboard diário de tráfego pago (18h) para de atualizar** enquanto
-`google_ads` e `facebook` estiverem desconectados.
+## Achado aberto: convênio Hapvida divulgado no site
 
-Efeitos enquanto o bloqueio durar:
+A avaliação de 3★ de Elaine Rocha (26/08) — a única abaixo de 4★ nos últimos 90 dias —
+aponta uma contradição factual:
 
-- **Impressões, cliques e posição média** param na série que vai até 19/08.
-- **Contagem e nota das avaliações** param em 362 / 4,5★.
-- **Rotina de resposta às avaliações** sem enxergar nada desde 22/08. No ritmo medido
-  (~26 avaliações/mês), são cerca de 12 aguardando. A rotina já está instruída a tratar a
-  primeira execução bem-sucedida como recuperação (varredura de 90 dias, 15 respostas/dia
-  das mais recentes para as mais antigas, até zerar).
+> "no site aparece que atendem meu plano de saúde e quando liguei a atendente falou que não
+> atende, então sugeri que atualizem o site! Meu plano é o Hapvida."
 
-O Local Falcon (SoLV) exige autorização OAuth que não pode ser feita nesta sessão.
+Verificado em 05/09: `https://totalquality.med.br/convenios` lista **Hapvida** sob o título
+"Planos de saúde atendidos", entre Unimed, Bradesco Saúde, SulAmérica, Amil, Porto Seguro,
+NotreDame Intermédica, Cassi, Geap, Postal Saúde, Economus e Funasa.
 
-## Estado das frentes em 31/08/2026
+Há uma ressalva na página ("A lista é atualizada periodicamente. Confirme a aceitação do seu
+plano pelo WhatsApp"), mas ela não evita o dano: a paciente se planejou pela lista e recebeu
+a negativa só ao telefone.
+
+**Não dá para resolver sem a clínica dizer qual lado está certo** — ou o site está
+desatualizado, ou a atendente errou. Definido isso:
+- se a Total Quality **não** atende Hapvida → remover da lista (correção no repositório do site);
+- se **atende** → o erro foi no atendimento telefônico, e o caso é de treinamento da recepção.
+
+A mesma dúvida vale para os outros 11 planos listados: nenhum foi conferido contra a
+realidade operacional. Vale uma revisão da lista inteira de uma vez.
+
+## Estado das frentes em 05/09/2026
 
 | Frente | Status | Observação |
 |---|---|---|
 | Perfil do Google (horário, site, telefone, descrição) | ✅ feito | via API |
-| Campanha de avaliações | ✅ rodando | 28 novas até 19/08, 100% 5★ |
-| Rotina de resposta às avaliações | 🔴 **parada desde 22/08** | limite de fontes de dados do plano Basic do Windsor |
+| Campanha de avaliações | ✅ rodando | **409 avaliações** (+47 desde 19/08) |
+| Rotina de resposta às avaliações | ✅ **normalizada em 05/09** | passivo zerado; 0 avaliações sem resposta em 90 dias |
 | Posts por prioridade (laboratorial → ultrassom → tomografia) | ✅ concluído | 12, 15 e 18/08 |
 | **Categorias do perfil (7 → 3)** | ⚠️ **pendente** | só no painel do GBP; é a ação nº 1 |
 | Lista de Serviços no perfil | ⚠️ pendente | só no painel do GBP |
 | Site oficial — HTML pré-renderizado, schema, imagens | ✅ resolvido | reconfirmado em 31/08 |
 | Site oficial — soft 404 | ⚠️ pendente | reconfirmado em 31/08: ainda HTTP 200 |
 | Site oficial — anos de atuação automáticos + `foundingDate` | ⚠️ aguardando merge | PR #11 aberto em draft; nada no ar |
-| Sites-clone (lovable.app, localo.site) | ⚠️ pendente | **ambos ainda HTTP 200 em 31/08** |
+| Sites-clone (lovable.app, localo.site) | ⚠️ pendente | ambos ainda HTTP 200 em 31/08 |
+| **Convênio Hapvida no site** | ⚠️ **novo, aguarda decisão** | ver achado acima; gerou a única avaliação 3★ do período |
 
 ## Reverificação técnica do site (medida em 31/08/2026)
 
@@ -136,8 +173,8 @@ Permanece em aberto:
 
 Sequência para atualizar:
 
-1. No painel do Windsor (Connectors), deixar apenas `google_my_business` conectado —
-   ver "Lacuna de dados" acima. O limite do plano Basic é por fonte de dados, não por conta.
+1. Conferir que o Windsor responde (se voltar a bloquear, o limite do plano Basic é por
+   **fonte de dados**, não por conta — ver "Apagão de dados" acima).
 2. Puxar do conector `google_my_business` os campos `date, impressions` (série diária) e
    `review_create_time, review_star_rating, review_total_count, review_average_rating`.
 3. Recalcular os agregados semanais e a série acumulada de avaliações.
