@@ -121,3 +121,89 @@ CPA R$ 28,52) é o par mais limpo dessa comparação — mesma intenção, só a
    sugerem que a expressão precisa existir em algum campo do perfil. A lista de Serviços do
    Google Meu Negócio é o lugar legítimo para isso — diferente de inflar o nome do perfil,
    que é o que o Sabin faz e viola as diretrizes do Google.
+
+---
+
+## 5. Extração adicional: o ranking competitivo completo dentro dos scans 7×7
+
+Cada relatório 7×7 carrega o campo `places` com o perfil de **todos** os negócios encontrados
+na grade — nota, avaliações, categorias, SoLV, ARP e em quantos pontos apareceu. Isso permite
+montar o pódio real sem rodar scan novo. Dados de 25/08, raio 10 mi.
+
+### "laboratório em caraguatatuba" — 32 negócios no mapa
+
+| # | Negócio | SoLV | ARP | Achado | Nota | Aval. | Categorias |
+|---:|---|---:|---:|---|---:|---:|---|
+| 1 | Sabin Diagnóstico e Saúde Centro: Laboratório em Caraguatatuba SP | **100,0%** | 1,41 | 29/29 | 4,1 | 258 | Laboratory |
+| 2 | Laboratório Bellato | 65,5% | 3,03 | 29/29 | 4,4 | 57 | Medical laboratory |
+| 3 | Duclin Laboratório de Análises Clínicas | 65,5% | 3,55 | 29/29 | 4,8 | 174 | Laboratory |
+| 5 | LABORATORIO FERREIRA LF | 20,7% | 7,29 | 14/29 | 5,0 | 29 | Blood testing service |
+| **10** | **Total Quality** | **0,0%** | 7,52 | 29/29 | 4,6 | **393** | Laboratory, Medical diagnostic imaging center |
+
+### "exame de sangue caraguatatuba" — 37 negócios no mapa
+
+| # | Negócio | SoLV | ARP | Achado | Nota | Aval. | Categorias |
+|---:|---|---:|---:|---|---:|---:|---|
+| 1 | Duclin Laboratório de Análises Clínicas | **86,2%** | 1,72 | 29/29 | 4,8 | 174 | Laboratory |
+| 2 | Laboratório Pampanelli | 65,5% | 4,00 | 29/29 | 4,1 | 34 | Medical laboratory |
+| 3 | Laboratório Bellato | 58,6% | 4,00 | 29/29 | 4,4 | 57 | Medical laboratory |
+| 5 | LABORATORIO FERREIRA LF | 20,7% | 10,05 | 19/29 | 5,0 | **29** | **Blood testing service** |
+| **12** | **Total Quality** | **0,0%** | 8,48 | 29/29 | 4,6 | **393** | Laboratory, Medical diagnostic imaging center |
+
+### "laboratório de análises clínicas" — 36 negócios no mapa
+
+| # | Negócio | SoLV | ARP | Achado | Nota | Aval. | Categorias |
+|---:|---|---:|---:|---|---:|---:|---|
+| 1 | Duclin Laboratório de Análises Clínicas | 48,3% | 3,62 | 29/29 | 4,8 | 174 | Laboratory |
+| 2 | Sabin Diagnóstico e Saúde Centro: Laboratório em Caraguatatuba SP | 48,3% | 4,55 | 29/29 | 4,1 | 258 | Laboratory |
+| 3 | Humanize Clinical Laboratory | 34,5% | 4,90 | 29/29 | 5,0 | 262 | Medical laboratory |
+| **17** | **Total Quality** | **0,0%** | **21,00** | **0/29** | 4,6 | **393** | Laboratory, Medical diagnostic imaging center |
+
+---
+
+## 6. O que esses três pódios provam
+
+### a) Avaliação não é o gargalo — e agora está provado com número
+
+A Total Quality tem **393 avaliações**, a maior base do mapa por uma margem larga: o segundo
+é a Humanize com 262, depois Sabin com 258 e Duclin com 174. Mesmo assim fica em **10º, 12º e
+17º** lugar, com SoLV 0% nos três termos.
+
+O contraste mais duro: **LABORATORIO FERREIRA LF, com 29 avaliações**, tira 20,7% de SoLV em
+"exame de sangue caraguatatuba". A Total Quality, com **13 vezes mais avaliações**, tira 0%.
+Continuar acelerando a captação de avaliações não vai resolver isso — o sinal já está saturado.
+
+### b) A correção de categorias deixou de fora justamente a que faltava
+
+A auditoria de agosto recomendou (item 1 do plano de ação):
+
+> categoria primária → "Laboratório" e enxugar as adicionais para no máximo 2–3 realmente
+> estratégicas (ex.: **"Serviço de exames de sangue"** + "Centro de diagnóstico por imagem")
+
+O que está no perfil hoje: **Laboratory + Medical diagnostic imaging center**. A redução de 7
+para 2 foi feita — mas **"Serviço de exames de sangue" ficou de fora**.
+
+E é exatamente essa a categoria do FERREIRA (`Blood testing service`), o negócio de 29
+avaliações que pontua onde a Total Quality zera. "Exame de sangue" é a prioridade nº 1 declarada
+para a clínica, e o perfil não carrega mais a categoria que nomeia esse exame.
+
+**Ação: adicionar "Serviço de exames de sangue" como categoria adicional.** Fica em 3
+categorias — dentro do limite recomendado, e todas coerentes entre si.
+
+### c) O nome do perfil continua sendo o fator dominante — e não é replicável
+
+Sabin faz 100% de SoLV em "laboratório em caraguatatuba" com a **pior nota do pódio (4,1)**,
+porque o nome do perfil é literalmente "Sabin Diagnóstico e Saúde Centro: **Laboratório em
+Caraguatatuba SP**" — a consulta inteira dentro do nome. Duclin faz 86,2% em "exame de sangue
+caraguatatuba" e 48,3% em "laboratório de análises clínicas" pelo mesmo mecanismo.
+
+Isso **não deve ser copiado**: incluir palavra-chave no nome do perfil viola as diretrizes de
+representação do Google e sujeita o perfil a suspensão. O caminho legítimo para carregar essas
+expressões é a **lista de Serviços**, que segue pendente desde agosto.
+
+### d) Duplicatas de concorrentes no mapa
+
+Duclin aparece com dois perfis ("Duclin Laboratório de Análises Clínicas", 174 e 130
+avaliações, mais "Duclin Laboratórios de Análises Clínicas" com 54) e Bellato com dois (57 e
+45). Podem ser unidades distintas ou listagens duplicadas. Se forem duplicatas, ocupam lugares
+no pacote de 3 que deveriam ser de um único negócio — e são reportáveis ao Google.
