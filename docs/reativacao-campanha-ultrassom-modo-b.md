@@ -156,19 +156,24 @@ Recomendação: manter apenas ali e remover o grupo da Obstétrica.
 
 `ultrassom são sebastião` foi **mantida** — 22 km, dentro do raio, sem balsa.
 
-### 3.2 Grupo "USG Articulações (MSK)" pausado
+### 3.2 Grupo "USG Articulações (MSK)" — pausado e depois reativado
 
 Os 12 termos desse grupo (`ultrassom de tendão`, `ultrassom de cotovelo`,
 `ultrassom musculoesquelético`, `ultrassom do punho`, `ultrassom do pé`,
 `ultrassom de tornozelo`) anunciam exames que **a página de destino não menciona**.
 
-A `/exames/ultrassonografia` lista: abdome (fígado, vesícula, rins, pâncreas),
-obstétrico, tireoide, pelve, mama, próstata e Doppler. Musculoesquelético não
-aparece.
+A `/exames/ultrassonografia` lista, na seção "Indicações": abdome (fígado,
+vesícula, rins, pâncreas), obstétrico, tireoide, pelve, mama, próstata e Doppler.
+Musculoesquelético não aparece.
 
-Pausado em vez de removido — é reversível com uma chamada. **Confirme se a
-clínica realiza ultrassom musculoesquelético.** Se sim, o caminho é adicionar a
-seção na página e reativar o grupo; se não, ele deve ser removido.
+O grupo foi pausado por precaução e **reativado em seguida**, depois de a clínica
+confirmar que realiza todos os tipos de ultrassom. Recebeu anúncio próprio
+apontando para a página (`823810161829`).
+
+⚠️ **Fica uma lacuna de conteúdo:** a página de destino segue sem citar ultrassom
+musculoesquelético. Anunciar um exame que a página não descreve é exatamente o
+problema de relevância que esta auditoria corrigiu no resto da campanha. A
+correção é uma linha na seção "Indicações" — ver §5, item 7.
 
 ### 3.3 65 palavras negativas adicionadas (a campanha tinha zero)
 
@@ -229,7 +234,32 @@ Google Ads, que mostra a política citada e permite pedir isenção.
 | USG Próstata | `823888485317` |
 | USG Rins e Vias Urinárias | `823765713990` |
 
-**12 anúncios que apontavam para o WhatsApp foram pausados.**
+| USG Articulações (MSK) | `823810161829` |
+
+**Extensão a toda a conta.** Confirmado pela clínica que ela realiza todos os
+tipos de ultrassom, as demais campanhas de ultrassom também foram migradas:
+
+| Campanha | Grupo | Novo anúncio | Destino |
+|---|---|---|---|
+| [TQ] Ultrassom Doppler | Doppler Genérico | `823765990719` | `/exames/ultrassonografia` |
+| [TQ] Ultrassom Obstétrica | Sexagem Fetal | `823810203037` | `/exames/exames-de-sangue` |
+
+A Sexagem Fetal foi a única exceção ao destino único, e por um motivo clínico:
+**sexagem fetal é exame de sangue materno, não ultrassom.** Mandá-la para a página
+de ultrassonografia recriaria a incompatibilidade que esta auditoria eliminou. Ela
+foi apontada para `/exames/exames-de-sangue`, que é o destino do grupo "Exames |
+Sexagem Fetal" da Leads-Search-15 — o único dos três que converte (4 conversões).
+
+**20 anúncios que apontavam para o WhatsApp foram pausados.**
+
+### Resultado: zero anúncios no WhatsApp
+
+Verificado por leitura de volta na API: **nenhum anúncio ativo da conta aponta
+mais para `wa.me` ou `api.whatsapp.com`.** Todos os anúncios habilitados das 15
+campanhas apontam para uma página em `totalquality.med.br`.
+
+O CTA de WhatsApp continua existindo — agora dentro da página, que é onde o Google
+consegue ler o contexto e pontuar a experiência de destino.
 
 Os textos seguem a Resolução CFM 2.336/2023: identificam a clínica e o endereço,
 não prometem nem insinuam resultado, não usam superlativo de superioridade e não
@@ -278,11 +308,33 @@ Negativas de campanha: **65**. CPA-alvo: **R$ 20,00**. Orçamento: **R$ 15/dia**
 |---|---|---|---|
 | 1 | Adicionar as 9 palavras recusadas | Google Ads (interface) | a API não expõe a política citada; a interface mostra e permite pedir isenção |
 | 2 | Popular o grupo "USG Tireoide" | Google Ads | o grupo existe vazio; a API não retornou o ID dele por nunca ter tido dados. A tireoide está na página de destino |
-| 3 | Confirmar se a clínica faz ultrassom musculoesquelético | operação | define se o grupo MSK volta ou sai |
-| 4 | Tirar os 3 termos não-obstétricos da Obstétrica | Google Ads | `ultrassom mamas caraguatatuba`, `ultrassonografia geral caraguatatuba`, `ultrassonografia com doppler` |
-| 5 | Consolidar sexagem fetal na Leads-Search-15 | Google Ads | é a única das três que converte, e é exame de sangue |
-| 6 | Aplicar o mesmo tratamento à campanha Doppler | Google Ads | mesma estrutura, mesmo URL de WhatsApp, também pausada |
-| 7 | Descrever ultrassom de abdome e pelve na página | site | os grupos anunciam exames que a página só cita de passagem |
+| 3 | Tirar os 3 termos não-obstétricos da Obstétrica | Google Ads | `ultrassom mamas caraguatatuba`, `ultrassonografia geral caraguatatuba`, `ultrassonografia com doppler` |
+| 4 | Consolidar sexagem fetal na Leads-Search-15 | Google Ads | é a única das três que converte, e é exame de sangue |
+| 5 | Decidir se a campanha Doppler volta ao ar | Google Ads | anúncios já migrados para o site; segue pausada |
+| 6 | Citar sexagem fetal na página de exames de sangue | site | nenhuma das duas páginas menciona o exame, e três campanhas gastam com ele |
+| 7 | **Ampliar a seção "Indicações" da página de ultrassonografia** | site | ver abaixo |
+
+### Item 7 — o que falta na página de destino
+
+Agora que **todas** as campanhas de ultrassom apontam para
+`/exames/ultrassonografia`, a seção "Indicações" precisa cobrir tudo o que se
+anuncia. Hoje ela lista sete itens; faltam os exames dos grupos que voltaram:
+
+| Anunciado | Está na página? |
+|---|---|
+| Abdome (fígado, vesícula, rins, pâncreas) | ✅ |
+| Obstétrico | ✅ |
+| Tireoide | ✅ |
+| Pelve | ✅ |
+| Mama | ✅ |
+| Próstata | ✅ |
+| Doppler (vascular) | ✅ |
+| **Musculoesquelético** (ombro, joelho, punho, cotovelo, tornozelo, pé, tendão) | ❌ |
+| **Transvaginal** (ginecológico, fora do contexto obstétrico) | ❌ |
+
+São duas linhas na lista de indicações e, idealmente, uma linha de preparo para
+cada. O arquivo fica no repositório `alexwaltersdorf/total-quality`, em
+`server/_core/seo-content.ts`.
 
 ---
 
