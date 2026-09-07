@@ -358,3 +358,65 @@ Revisar em **14/09** (7 dias) e **21/09** (14 dias). O que observar, em ordem:
 Se em 14 dias o CPC não tiver cedido, a causa não era a página de destino, e o
 próximo suspeito é a concorrência no leilão de "ultrassom" em Caraguatatuba —
 que se resolve com lance, não com estrutura.
+
+---
+
+## Adendo — 07/09/2026: os genéricos `ultrassonografia` e `usg`
+
+A clínica observou que os dois termos aparecem nas pesquisas e pediu para
+incluí-los nas campanhas de ultrassom.
+
+### O problema de colocá-los "nas campanhas", no plural
+
+São termos genéricos. Adicioná-los às três campanhas de ultrassom faria as três
+disputarem a mesma busca com a mesma conta — a canibalização que esta auditoria
+passou o dia eliminando, e que já custou caro em `ultrassom caraguatatuba` (§2).
+
+### A solução: genérico em uma campanha, específico nas outras
+
+Os genéricos entram **só na Modo B**, que é a campanha geral de ultrassom. As
+negativas cruzadas que ela já tem fazem o roteamento sozinhas: uma busca genérica
+fica; uma busca específica é bloqueada ali e sobra para a campanha certa.
+
+| Campanha | Palavras adicionadas |
+|---|---|
+| **Modo B** — Ultrassom Genérico Local | `ultrassonografia` (frase + ampla) · `usg` (frase + ampla) · `fazer ultrassonografia` · `usg caraguatatuba` · `ultrassonografia particular` |
+| **Obstétrica** — USG Obstétrico Geral | `usg obstetrico` · `usg obstetrica` · `ultrassonografia obstetrica` · `usg gestacional` · `ultrassonografia gestacional` |
+| **Doppler** — Doppler Rins e Geral | `usg com doppler` · `ultrassonografia com doppler` |
+
+14 de 16 aceitas. Recusadas por política: `usg doppler` e `ultrassonografia doppler`.
+
+Removidas da Obstétrica: `ultrassonografia com doppler` (ampla e frase) — estava
+na campanha obstétrica anunciando exame de outra, e agora existe na campanha de
+Doppler, onde é o lugar dela.
+
+### Verificação do roteamento
+
+Simulando a correspondência das 65 negativas da Modo B contra 20 buscas reais
+possíveis, com o script `scripts/verifica-negativas-google-ads.py`:
+
+| Busca | Deve ir para | Modo B |
+|---|---|---|
+| `usg` | Modo B | serve ✅ |
+| `ultrassonografia` | Modo B | serve ✅ |
+| `usg de tireoide` | Modo B | serve ✅ |
+| `ultrassonografia de abdome` | Modo B | serve ✅ |
+| `usg obstetrico` | Obstétrica | bloqueada por `obstetrico` ✅ |
+| `usg gestacional` | Obstétrica | bloqueada por `gestacional` ✅ |
+| `ultrassonografia de gravidez` | Obstétrica | bloqueada por `gravidez` ✅ |
+| `usg com doppler` | Doppler | bloqueada por `doppler` ✅ |
+| `usg doppler carotidas` | Doppler | bloqueada por `doppler` ✅ |
+| `usg ubatuba` | nenhuma | bloqueada por `ubatuba` ✅ |
+| `curso de ultrassonografia` | nenhuma | bloqueada por `curso` ✅ |
+| `usg veterinaria` | nenhuma | bloqueada por `veterinaria` ✅ |
+
+**20 de 20 corretos.** Nenhuma das três campanhas rouba busca das outras, e o
+ruído (curso, SUS, veterinária, fora de área) continua barrado.
+
+### O que observar na revisão de 14/09
+
+Estes dois termos são os mais amplos da campanha. São também os que mais podem
+trazer busca fora de escopo. Na revisão, o primeiro relatório a abrir é o de
+termos de busca do grupo "Ultrassom Genérico Local": se aparecer algo obstétrico,
+de Doppler ou de outra modalidade, falta negativa e é prioridade sobre qualquer
+ajuste de lance.
