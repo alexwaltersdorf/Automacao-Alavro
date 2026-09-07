@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alavro — Disparo WhatsApp</title>
+<!-- Ícone embutido: evita a requisição a /favicon.ico, que cairia no 404 da API. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2325d366'/%3E%3Ctext x='16' y='23' font-family='system-ui,sans-serif' font-size='19' font-weight='700' text-anchor='middle' fill='%2306231a'%3EA%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0f1419; --panel: #161d26; --panel-2: #1d2733; --border: #263241;
+    --text: #e6edf3; --muted: #8b98a5; --accent: #25d366; --accent-2: #128c7e;
+    --warn: #f0b132; --danger: #f2555a; --info: #4a9eff;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f7fa; --panel: #fff; --panel-2: #f0f3f7; --border: #dde3ea;
+      --text: #16202a; --muted: #5d6b7a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--panel);
+    position: sticky; top: 0; z-index: 20; flex-wrap: wrap;
+  }
+  h1 { font-size: 17px; margin: 0; display: flex; align-items: center; gap: 9px; }
+  .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: #06231a; font-weight: 700; font-size: 13px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  section { margin-bottom: 30px; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0; font-weight: 600; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .card .label { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .card .value { font-size: 25px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .card .value.sm { font-size: 16px; font-weight: 550; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: top; }
+  th { background: var(--panel-2); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .pill.running, .pill.queued { background: rgba(74,158,255,.16); color: var(--info); }
+  .pill.completed, .pill.delivered, .pill.read, .pill.approved, .pill.open { background: rgba(37,211,102,.16); color: var(--accent); }
+  .pill.paused, .pill.pending_review { background: rgba(240,177,50,.16); color: var(--warn); }
+  .pill.failed, .pill.cancelled, .pill.rejected { background: rgba(242,85,90,.16); color: var(--danger); }
+  .pill.draft, .pill.pending, .pill.skipped, .pill.closed { background: var(--panel-2); color: var(--muted); }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); padding: 7px 13px; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #06231a; font-weight: 600; }
+  button.primary:hover:not(:disabled) { background: var(--accent-2); color: #fff; }
+  button.small { padding: 4px 10px; font-size: 13px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .on { background: var(--accent); box-shadow: 0 0 0 3px rgba(37,211,102,.18); }
+  .off { background: var(--danger); box-shadow: 0 0 0 3px rgba(242,85,90,.18); }
+  .muted { color: var(--muted); font-size: 13px; }
+  .bar { height: 7px; background: var(--panel-2); border-radius: 99px; overflow: hidden; display: flex; margin-top: 7px; }
+  .bar > span { height: 100%; }
+  .alert { border: 1px solid var(--warn); background: rgba(240,177,50,.1); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; margin-bottom: 12px; }
+  .alert.error { border-color: var(--danger); background: rgba(242,85,90,.1); }
+  .alert.ok { border-color: var(--accent); background: rgba(37,211,102,.1); }
+  code { background: var(--panel-2); padding: 1.5px 6px; border-radius: 5px; font-size: 12.5px; }
+  input, select, textarea {
+    font: inherit; background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 8px 11px; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { min-height: 110px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+  input.narrow { width: 95px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  .field { margin-bottom: 14px; }
+  .fields-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 620px) { .fields-2 { grid-template-columns: 1fr; } }
+
+  dialog {
+    border: 1px solid var(--border); background: var(--panel); color: var(--text);
+    border-radius: 12px; padding: 0; max-width: 620px; width: calc(100% - 32px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.45);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.55); }
+  .dialog-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .dialog-head h3 { margin: 0; font-size: 16px; }
+  .dialog-body { padding: 20px; max-height: 65vh; overflow-y: auto; }
+  .dialog-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tabs button { border: none; background: none; border-radius: 0; border-bottom: 2px solid transparent; padding: 9px 14px; color: var(--muted); }
+  .tabs button.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+  .tabs button:hover { border-color: transparent; border-bottom-color: var(--border); }
+  .empty { padding: 26px; text-align: center; color: var(--muted); font-size: 14px; }
+  .reply-body { white-space: pre-wrap; word-break: break-word; max-width: 420px; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="logo">A</span> Alavro · Disparo WhatsApp</h1>
+  <div class="row">
+    <span class="muted"><span id="engine-dot" class="status-dot off"></span> <span id="engine-label">motor parado</span></span>
+    <button id="btn-toggle">Iniciar motor</button>
+    <button id="btn-refresh">Atualizar</button>
+  </div>
+</header>
+
+<main>
+  <div id="alerts"></div>
+
+  <div class="tabs">
+    <button data-tab="painel" class="active">Painel</button>
+    <button data-tab="campanhas">Campanhas</button>
+    <button data-tab="respostas">Respostas</button>
+  </div>
+
+  <!-- Painel ---------------------------------------------------------------->
+  <div data-panel="painel">
+    <section>
+      <div class="section-head">
+        <h2>Visão geral</h2>
+        <div class="row">
+          <button id="btn-import">Importar contatos</button>
+          <button id="btn-new-campaign" class="primary">Nova campanha</button>
+        </div>
+      </div>
+      <div class="grid" id="overview"></div>
+    </section>
+
+    <section>
+      <h2>Motor de disparo</h2>
+      <div class="grid" id="engine"></div>
+      <div class="row" style="margin-top:12px">
+        <span class="muted">Ritmo (msg/s):</span>
+        <input type="number" id="rate" min="1" step="1" class="narrow" />
+        <button id="btn-rate">Aplicar</button>
+        <span class="muted" id="rate-hint"></span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Campanhas ------------------------------------------------------------->
+  <div data-panel="campanhas" hidden>
+    <section>
+      <div class="section-head">
+        <h2>Campanhas</h2>
+        <button id="btn-new-campaign-2" class="primary">Nova campanha</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Nome</th><th>Status</th><th>Template</th><th>Progresso</th><th>Entregues</th><th>Falhas</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="campaigns"><tr><td colspan="8" class="empty">carregando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Respostas ------------------------------------------------------------->
+  <div data-panel="respostas" hidden>
+    <section>
+      <div class="section-head">
+        <h2>Respostas recebidas</h2>
+        <span class="muted">Cada resposta abre a janela de 24h com aquele contato.</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Quando</th><th>Contato</th><th>Mensagem</th><th>Janela 24h</th><th>Situação</th></tr>
+          </thead>
+          <tbody id="inbound"><tr><td colspan="5" class="empty">carregando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Modal: importar contatos ------------------------------------------------>
+<dialog id="dlg-import">
+  <form method="dialog">
+    <div class="dialog-head"><h3>Importar contatos</h3><button class="small" value="cancel">Fechar</button></div>
+    <div class="dialog-body">
+      <div id="import-result"></div>
+      <div class="field">
+        <label for="import-list">Lista (cria se não existir)</label>
+        <input id="import-list" placeholder="ex.: clientes-julho" />
+      </div>
+      <div class="field">
+        <label for="import-file">Arquivo CSV</label>
+        <input type="file" id="import-file" accept=".csv,text/csv" />
+        <div class="hint">Ou cole o conteúdo abaixo. Separador <code>,</code> ou <code>;</code>.</div>
+      </div>
+      <div class="field">
+        <label for="import-csv">Conteúdo do CSV</label>
+        <textarea id="import-csv" placeholder="nome,telefone,cidade&#10;Maria,(11) 98765-4321,Caraguatatuba"></textarea>
+        <div class="hint">
+          A coluna do telefone pode se chamar <code>telefone</code>, <code>celular</code>, <code>whatsapp</code> ou <code>phone</code>.
+          Colunas extras viram variáveis do template, como <code>{{cidade}}</code>.
+        </div>
+      </div>
+    </div>
+    <div class="dialog-foot">
+      <button value="cancel">Cancelar</button>
+      <button type="button" id="btn-do-import" class="primary">Importar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Modal: nova campanha ---------------------------------------------------->
+<dialog id="dlg-campaign">
+  <form method="dialog">
+    <div class="dialog-head"><h3>Nova campanha</h3><button class="small" value="cancel">Fechar</button></div>
+    <div class="dialog-body">
+      <div id="campaign-result"></div>
+
+      <div class="field">
+        <label for="c-name">Nome da campanha</label>
+        <input id="c-name" placeholder="ex.: Promoção de Julho" />
+      </div>
+
+      <div class="field">
+        <label for="c-list">Lista de contatos</label>
+        <select id="c-list"></select>
+      </div>
+
+      <div class="field">
+        <label for="c-template">Template aprovado na Meta</label>
+        <div class="row">
+          <select id="c-template" style="flex:1"></select>
+          <button type="button" id="btn-sync-templates">Sincronizar</button>
+        </div>
+        <div class="hint" id="template-hint">
+          Disparo em massa exige template <strong>aprovado</strong>. Clique em Sincronizar para buscar os seus na Meta.
+        </div>
+      </div>
+
+      <div class="field" id="vars-field" hidden>
+        <label>Variáveis do corpo</label>
+        <div id="vars-inputs"></div>
+        <div class="hint">
+          Disponíveis sempre: <code>{{name}}</code>, <code>{{phone}}</code>. Colunas do CSV também valem.
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="c-schedule">Agendar (opcional)</label>
+        <input type="datetime-local" id="c-schedule" />
+        <div class="hint">Em branco = disparar assim que você mandar.</div>
+      </div>
+    </div>
+    <div class="dialog-foot">
+      <button value="cancel">Cancelar</button>
+      <button type="button" id="btn-create-campaign" class="primary">Criar e conferir público</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Modal: confirmar disparo ------------------------------------------------>
+<dialog id="dlg-confirm">
+  <form method="dialog">
+    <div class="dialog-head"><h3>Conferir antes de disparar</h3><button class="small" value="cancel">Fechar</button></div>
+    <div class="dialog-body" id="confirm-body"></div>
+    <div class="dialog-foot">
+      <button value="cancel">Agora não</button>
+      <button type="button" id="btn-do-send" class="primary">Disparar</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const apiKey = new URLSearchParams(location.search).get('key') || localStorage.getItem('alavro_api_key') || '';
+if (apiKey) localStorage.setItem('alavro_api_key', apiKey);
+
+async function api(path, options = {}) {
+  const response = await fetch('/api' + path, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'X-API-Key': apiKey } : {}), ...options.headers },
+  });
+  const text = await response.text();
+  let body;
+  try { body = JSON.parse(text); } catch { body = text; }
+  if (!response.ok) throw new Error(body?.detail || body?.error || response.statusText);
+  return body;
+}
+
+const number = (value) => (value ?? 0).toLocaleString('pt-BR');
+const card = (label, value, klass = '') => `<div class="card"><div class="label">${label}</div><div class="value ${klass}">${value}</div></div>`;
+const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = (id) => document.getElementById(id);
+
+function notify(container, message, kind = 'ok') {
+  $(container).innerHTML = `<div class="alert ${kind}">${message}</div>`;
+}
+
+// --- Abas -------------------------------------------------------------------
+
+document.querySelector('.tabs').onclick = (event) => {
+  const button = event.target.closest('button[data-tab]');
+  if (!button) return;
+  for (const tab of document.querySelectorAll('.tabs button')) tab.classList.toggle('active', tab === button);
+  for (const panel of document.querySelectorAll('[data-panel]')) panel.hidden = panel.dataset.panel !== button.dataset.tab;
+  if (button.dataset.tab === 'respostas') loadInbound();
+};
+
+// --- Render -----------------------------------------------------------------
+
+function renderAlerts(health) {
+  const items = [];
+  if (health.credentials.sending.length) items.push(`Credenciais de envio faltando: <code>${health.credentials.sending.join('</code> <code>')}</code>. Preencha o <code>.env</code>.`);
+  if (health.credentials.webhook.length) items.push(`Webhook não configurado: <code>${health.credentials.webhook.join('</code> <code>')}</code>. Sem isso não há status de entrega nem descadastro automático.`);
+  if (health.dryRun) items.push('<strong>DRY_RUN ativo</strong> — nada é enviado de verdade à Meta.');
+  $('alerts').innerHTML = items.map((text) => `<div class="alert">${text}</div>`).join('');
+}
+
+function renderOverview(data) {
+  $('overview').innerHTML = [
+    card('Contatos ativos', number(data.contacts.optedIn)),
+    card('Descadastrados', number(data.contacts.optedOut)),
+    card('Sem WhatsApp', number(data.contacts.invalidWhatsApp)),
+    card('Campanhas em andamento', number(data.campaigns.running)),
+    card('Mensagens enviadas', number((data.messages.sent || 0) + (data.messages.delivered || 0) + (data.messages.read || 0))),
+    card('Entregues', number((data.messages.delivered || 0) + (data.messages.read || 0))),
+    card('Lidas', number(data.messages.read)),
+    card('Falhas', number(data.messages.failed)),
+    card('Destinatários hoje', `${number(data.today.uniqueRecipients)}${data.today.limit ? ' / ' + number(data.today.limit) : ''}`, 'sm'),
+    card('Respostas recebidas', number(data.inbound)),
+  ].join('');
+}
+
+function renderEngine(status) {
+  $('engine').innerHTML = [
+    card('Na fila', number(status.pendingMessages)),
+    card('Ritmo atual', status.rate.currentRate + ' msg/s', 'sm'),
+    card('Ritmo nominal', status.rate.nominalRate + ' msg/s', 'sm'),
+    card('Concorrência', status.concurrency),
+    card('Enviadas na sessão', number(status.totals.sent)),
+    card('Throttles da Meta', number(status.totals.throttles)),
+  ].join('');
+
+  $('engine-dot').className = 'status-dot ' + (status.running ? 'on' : 'off');
+  $('engine-label').textContent = status.running ? 'motor rodando' : 'motor parado';
+  $('btn-toggle').textContent = status.running ? 'Parar motor' : 'Iniciar motor';
+  $('btn-toggle').dataset.running = status.running;
+
+  const rate = $('rate');
+  if (document.activeElement !== rate) rate.value = status.rate.nominalRate;
+
+  const usage = status.graphApiUsage?.callCount;
+  $('rate-hint').textContent = usage === null || usage === undefined
+    ? ''
+    : `cota da Graph API: ${usage}% usada`;
+}
+
+function progressBar(stats) {
+  const total = stats.total || 1;
+  const part = (n, color) => (n > 0 ? `<span style="width:${(n / total) * 100}%;background:${color}"></span>` : '');
+  return `<div class="bar">
+    ${part((stats.delivered || 0) + (stats.read || 0), 'var(--accent)')}
+    ${part(stats.sent, 'var(--info)')}
+    ${part(stats.failed, 'var(--danger)')}
+    ${part((stats.skipped || 0) + (stats.cancelled || 0), 'var(--muted)')}
+  </div><span class="muted">${number(stats.processed)} / ${number(stats.total)}</span>`;
+}
+
+function renderCampaigns(data) {
+  const body = $('campaigns');
+  if (!data.items.length) {
+    body.innerHTML = '<tr><td colspan="8" class="empty">Nenhuma campanha ainda. Clique em <strong>Nova campanha</strong> para começar.</td></tr>';
+    return;
+  }
+  body.innerHTML = data.items.map((campaign) => {
+    const running = ['running', 'queued'].includes(campaign.status);
+    const actions = [];
+    if (['draft', 'paused'].includes(campaign.status)) actions.push(`<button class="small primary" data-action="start" data-id="${campaign.id}">Disparar</button>`);
+    if (running) actions.push(`<button class="small" data-action="pause" data-id="${campaign.id}">Pausar</button>`);
+    if (campaign.stats.failed > 0) actions.push(`<button class="small" data-action="retry-failed" data-id="${campaign.id}">Reenviar falhas</button>`);
+    actions.push(`<a href="/api/campaigns/${campaign.id}/report.csv" download><button type="button" class="small">CSV</button></a>`);
+
+    return `<tr>
+      <td class="muted">${campaign.id}</td>
+      <td>${esc(campaign.name)}</td>
+      <td><span class="pill ${campaign.status}">${campaign.status}</span></td>
+      <td class="muted">${esc(campaign.template_name || campaign.message_type)}</td>
+      <td style="min-width:150px">${progressBar(campaign.stats)}</td>
+      <td>${number(campaign.stats.deliveredTotal)}</td>
+      <td>${number(campaign.stats.failed)}</td>
+      <td><div class="row">${actions.join('')}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderInbound(data) {
+  const body = $('inbound');
+  if (!data.items.length) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma resposta ainda. Elas chegam pelo webhook configurado na Meta.</td></tr>';
+    return;
+  }
+  body.innerHTML = data.items.map((item) => {
+    const quando = new Date(item.received_at).toLocaleString('pt-BR');
+    const nome = item.contact_name || item.profile_name || '—';
+    const situacao = item.opted_in === false
+      ? '<span class="pill cancelled">descadastrado</span>'
+      : '<span class="pill open">ativo</span>';
+    return `<tr>
+      <td class="muted" style="white-space:nowrap">${esc(quando)}</td>
+      <td>${esc(nome)}<div class="muted">${esc(item.phone_e164 || item.from_wa_id)}</div></td>
+      <td class="reply-body">${esc(item.body) || `<span class="muted">(${esc(item.type || 'sem texto')})</span>`}</td>
+      <td><span class="pill ${item.window_open ? 'open' : 'closed'}">${item.window_open ? 'aberta' : 'fechada'}</span></td>
+      <td>${situacao}</td>
+    </tr>`;
+  }).join('');
+}
+
+// --- Carregamento -----------------------------------------------------------
+
+async function refresh() {
+  try {
+    const [health, overview, dispatcher, campaigns] = await Promise.all([
+      api('/health'), api('/overview'), api('/dispatcher'), api('/campaigns?limit=50'),
+    ]);
+    renderAlerts(health);
+    renderOverview(overview);
+    renderEngine(dispatcher);
+    renderCampaigns(campaigns);
+  } catch (error) {
+    $('alerts').innerHTML = `<div class="alert error">Erro ao carregar: ${esc(error.message)}${apiKey ? '' : ' — se a API exige chave, abra o painel com <code>?key=SUA_CHAVE</code>.'}</div>`;
+  }
+}
+
+async function loadInbound() {
+  try {
+    renderInbound(await api('/inbound?limit=100'));
+  } catch (error) {
+    $('inbound').innerHTML = `<tr><td colspan="5" class="empty">Erro: ${esc(error.message)}</td></tr>`;
+  }
+}
+
+// --- Motor ------------------------------------------------------------------
+
+$('btn-refresh').onclick = refresh;
+$('btn-toggle').onclick = async (event) => {
+  const running = event.target.dataset.running === 'true';
+  await api(running ? '/dispatcher/stop' : '/dispatcher/start', { method: 'POST' });
+  refresh();
+};
+$('btn-rate').onclick = async () => {
+  await api('/dispatcher/rate', { method: 'POST', body: JSON.stringify({ rate_per_second: Number($('rate').value) }) });
+  refresh();
+};
+
+for (const id of ['campaigns']) {
+  $(id).onclick = async (event) => {
+    const button = event.target.closest('button[data-action]');
+    if (!button) return;
+    button.disabled = true;
+    try {
+      await api(`/campaigns/${button.dataset.id}/${button.dataset.action}`, { method: 'POST' });
+    } catch (error) {
+      $('alerts').innerHTML = `<div class="alert error">${esc(error.message)}</div>`;
+    } finally {
+      refresh();
+    }
+  };
+}
+
+// --- Importar contatos ------------------------------------------------------
+
+$('btn-import').onclick = () => {
+  $('import-result').innerHTML = '';
+  $('dlg-import').showModal();
+};
+
+$('import-file').onchange = async (event) => {
+  const file = event.target.files?.[0];
+  if (file) $('import-csv').value = await file.text();
+};
+
+$('btn-do-import').onclick = async (event) => {
+  const csv = $('import-csv').value.trim();
+  if (!csv) return notify('import-result', 'Cole o CSV ou escolha um arquivo.', 'error');
+
+  event.target.disabled = true;
+  try {
+    const payload = { csv };
+    const list = $('import-list').value.trim();
+    if (list) payload.list = list;
+
+    const result = await api('/contacts/import', { method: 'POST', body: JSON.stringify(payload) });
+    const invalidos = result.invalid.length
+      ? `<br><strong>${result.invalid.length} inválidos:</strong> ` +
+        result.invalid.slice(0, 5).map((i) => `${esc(i.phone)} (${esc(i.error)})`).join('; ') +
+        (result.invalid.length > 5 ? `… e mais ${result.invalid.length - 5}` : '')
+      : '';
+    notify('import-result',
+      `${result.created} criados, ${result.updated} atualizados de ${result.total} linhas.${invalidos}`,
+      result.invalid.length ? 'warn' : 'ok');
+    $('import-csv').value = '';
+    $('import-file').value = '';
+    refresh();
+  } catch (error) {
+    notify('import-result', esc(error.message), 'error');
+  } finally {
+    event.target.disabled = false;
+  }
+};
+
+// --- Nova campanha ----------------------------------------------------------
+
+let templatesCache = [];
+
+async function openCampaignDialog() {
+  $('campaign-result').innerHTML = '';
+  $('vars-field').hidden = true;
+  $('vars-inputs').innerHTML = '';
+
+  try {
+    const lists = await api('/contacts/lists/all');
+    $('c-list').innerHTML = lists.items.length
+      ? lists.items.map((l) => `<option value="${l.id}">${esc(l.name)} (${l.contact_count} contatos)</option>`).join('')
+      : '<option value="">nenhuma lista — importe contatos primeiro</option>';
+
+    const templates = await api('/templates');
+    templatesCache = templates.items;
+    renderTemplateOptions();
+  } catch (error) {
+    notify('campaign-result', esc(error.message), 'error');
+  }
+  $('dlg-campaign').showModal();
+}
+
+function renderTemplateOptions() {
+  const approved = templatesCache.filter((t) => t.status === 'APPROVED');
+  const select = $('c-template');
+
+  if (approved.length === 0) {
+    select.innerHTML = '<option value="">nenhum template aprovado</option>';
+    $('template-hint').innerHTML = templatesCache.length
+      ? `Você tem ${templatesCache.length} template(s), mas nenhum <strong>aprovado</strong>. Só os aprovados podem ser usados em disparo.`
+      : 'Nenhum template em cache. Clique em <strong>Sincronizar</strong> para buscar os seus na Meta.';
+    return;
+  }
+
+  select.innerHTML = approved
+    .map((t) => `<option value="${esc(t.name)}|${esc(t.language)}">${esc(t.name)} [${esc(t.language)}]</option>`)
+    .join('');
+  $('template-hint').innerHTML = `${approved.length} template(s) aprovado(s) disponível(is).`;
+  updateVariableInputs();
+}
+
+/** Conta os {{n}} do corpo do template aprovado e pede um valor para cada. */
+function updateVariableInputs() {
+  const [name, language] = ($('c-template').value || '').split('|');
+  const template = templatesCache.find((t) => t.name === name && t.language === language);
+  const body = template?.components?.find((c) => c.type === 'BODY');
+  const count = body?.text ? new Set(body.text.match(/\{\{\s*\d+\s*\}\}/g) ?? []).size : 0;
+
+  if (count === 0) {
+    $('vars-field').hidden = true;
+    $('vars-inputs').innerHTML = '';
+    return;
+  }
+
+  $('vars-field').hidden = false;
+  $('vars-inputs').innerHTML =
+    (body?.text ? `<div class="hint" style="margin:0 0 10px">Corpo: <em>${esc(body.text)}</em></div>` : '') +
+    Array.from({ length: count }, (_, i) =>
+      `<div style="margin-bottom:8px"><label for="var-${i}">Valor de {{${i + 1}}}</label>
+       <input id="var-${i}" value="${i === 0 ? '{{name}}' : ''}" placeholder="ex.: {{cidade}} ou um texto fixo" /></div>`,
+    ).join('');
+}
+
+$('btn-new-campaign').onclick = openCampaignDialog;
+$('btn-new-campaign-2').onclick = openCampaignDialog;
+$('c-template').onchange = updateVariableInputs;
+
+$('btn-sync-templates').onclick = async (event) => {
+  event.target.disabled = true;
+  event.target.textContent = 'Sincronizando…';
+  try {
+    const result = await api('/templates/sync', { method: 'POST' });
+    templatesCache = (await api('/templates')).items;
+    renderTemplateOptions();
+    if (result.truncated) {
+      notify('campaign-result', `Lista parcial: ${result.synced} templates trazidos antes de atingir o limite da Graph API.`, 'warn');
+    }
+  } catch (error) {
+    notify('campaign-result', esc(error.message), 'error');
+  } finally {
+    event.target.disabled = false;
+    event.target.textContent = 'Sincronizar';
+  }
+};
+
+$('btn-create-campaign').onclick = async (event) => {
+  const name = $('c-name').value.trim();
+  const listId = $('c-list').value;
+  const [templateName, templateLanguage] = ($('c-template').value || '').split('|');
+
+  if (!name) return notify('campaign-result', 'Dê um nome à campanha.', 'error');
+  if (!listId) return notify('campaign-result', 'Escolha uma lista de contatos.', 'error');
+  if (!templateName) return notify('campaign-result', 'Escolha um template aprovado.', 'error');
+
+  const vars = [...document.querySelectorAll('#vars-inputs input')].map((input) => input.value.trim());
+  if (vars.some((value) => !value)) {
+    return notify('campaign-result', 'Preencha todas as variáveis — a Meta rejeita parâmetros vazios.', 'error');
+  }
+
+  event.target.disabled = true;
+  try {
+    const schedule = $('c-schedule').value;
+    const campaign = await api('/campaigns', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        list_id: Number(listId),
+        message_type: 'template',
+        template_name: templateName,
+        template_language: templateLanguage,
+        template_components: vars.length ? { body: vars } : null,
+        scheduled_at: schedule ? new Date(schedule).toISOString() : null,
+      }),
+    });
+
+    const queue = await api(`/campaigns/${campaign.id}/build-queue`, { method: 'POST' });
+    $('dlg-campaign').close();
+    $('c-name').value = '';
+    showConfirm(campaign, queue);
+  } catch (error) {
+    notify('campaign-result', esc(error.message), 'error');
+  } finally {
+    event.target.disabled = false;
+  }
+};
+
+// --- Confirmação do disparo -------------------------------------------------
+
+function showConfirm(campaign, queue) {
+  const fora = queue.skippedOptOut + queue.invalidWhatsApp;
+  $('confirm-body').innerHTML = `
+    <p style="margin-top:0">Campanha <strong>#${campaign.id} — ${esc(campaign.name)}</strong> criada.
+    Nada foi enviado ainda.</p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">
+      ${card('Vão receber', number(queue.queued))}
+      ${card('Público total', number(queue.audience))}
+      ${card('Fora (descadastrados)', number(queue.skippedOptOut))}
+      ${card('Fora (sem WhatsApp)', number(queue.invalidWhatsApp))}
+    </div>
+    ${fora > 0 ? `<div class="hint" style="margin-top:12px">${fora} contato(s) ficaram de fora por opt-out ou por não usarem WhatsApp.</div>` : ''}
+    ${campaign.scheduled_at ? `<div class="alert" style="margin-top:14px">Agendada para ${esc(new Date(campaign.scheduled_at).toLocaleString('pt-BR'))}. Disparar agora ignora o agendamento.</div>` : ''}
+    <div class="alert" style="margin-top:14px">
+      Confira o template e o público. Depois de disparar não há como desfazer o que já saiu —
+      só pausar o restante da fila.
+    </div>`;
+  $('btn-do-send').dataset.id = campaign.id;
+  $('dlg-confirm').showModal();
+}
+
+$('btn-do-send').onclick = async (event) => {
+  event.target.disabled = true;
+  try {
+    await api(`/campaigns/${event.target.dataset.id}/start`, { method: 'POST' });
+    $('dlg-confirm').close();
+    document.querySelector('.tabs button[data-tab="campanhas"]').click();
+    refresh();
+  } catch (error) {
+    $('confirm-body').insertAdjacentHTML('afterbegin', `<div class="alert error">${esc(error.message)}</div>`);
+  } finally {
+    event.target.disabled = false;
+  }
+};
+
+refresh();
+setInterval(() => {
+  // Não atualiza por baixo de um modal aberto para não perder o que foi digitado.
+  if (!document.querySelector('dialog[open]')) refresh();
+}, 4000);
+</script>
+</body>
+</html>
