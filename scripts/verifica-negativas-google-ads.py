@@ -1,3 +1,18 @@
+# LIMITACAO CONHECIDA (constatada em 14/09/2026)
+#
+# norm() remove acentos dos DOIS lados antes de comparar, entao este script
+# trata "obstetrico" e "obstetrico" como a mesma coisa. O Google NAO faz isso:
+# negativas nao pegam variantes aproximadas, e acento conta como variante.
+#
+# Consequencia pratica: este script e MAIS PERMISSIVO que o Google e vai
+# reportar como bloqueado um termo acentuado que na conta real e servido. Foi
+# o que aconteceu com "ultrassom obstetrico em caraguatatuba" e "ultrassom
+# morfologico" na campanha Modo B, ambos servidos apesar de a negativa sem
+# acento estar na lista.
+#
+# Ao montar uma lista de negativas, cadastre SEMPRE os dois pares: a forma sem
+# acento e a forma com acento. Ver docs/revisao-7dias-ultrassom-modo-b.md.
+
 import json,collections,re,unicodedata,sys
 neg=json.load(open(sys.argv[1]))['result']
 by=collections.defaultdict(list)
