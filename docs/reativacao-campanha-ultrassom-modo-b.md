@@ -420,3 +420,109 @@ trazer busca fora de escopo. Na revisão, o primeiro relatório a abrir é o de
 termos de busca do grupo "Ultrassom Genérico Local": se aparecer algo obstétrico,
 de Doppler ou de outra modalidade, falta negativa e é prioridade sobre qualquer
 ajuste de lance.
+
+---
+
+# Revisão de 7 dias — 14/09/2026
+
+Resposta item a item ao checklist definido em 07/09. O detalhamento do vazamento
+e da causa raiz está em `docs/revisao-7dias-ultrassom-modo-b.md`; aqui fica o
+placar contra o que foi previsto.
+
+## 1. CPC — a hipótese estava errada
+
+**Previsto:** R$ 3,00 → R$ 1,00–1,50 com a migração do WhatsApp para
+`/exames/ultrassonografia`.
+**Real:** R$ 3,00 → **R$ 2,61** (−13,0%).
+
+A previsão não se confirmou. A comparação com a Raio-X (R$ 0,71 com página
+própria) sugeriu que o destino era o fator dominante do CPC; ele ajudou, mas
+muito menos do que eu projetei.
+
+A explicação está na seção 2: a verba concentrou-se em `ultrassom caraguatatuba`
+e `clinica de ultrassom caraguatatuba` — cabeça de cauda, disputada por toda
+clínica da região. Um único clique em `clinica de ultrassom caraguatatuba` custou
+R$ 9,98. A Raio-X paga R$ 0,71 porque tem pouca concorrência local, não só porque
+tem página. Comparei campanhas que não são comparáveis nesse aspecto.
+
+## 2. Distribuição entre grupos — a segmentação por anatomia não vingou
+
+| Grupo de anúncios | Investimento | % | Cliques | Impr. | Conv. |
+|---|---:|---:|---:|---:|---:|
+| **Ultrassom Genérico Local** | **R$ 95,87** | **78,7%** | 33 | 402 | **9** |
+| USG Rins e Vias Urinárias | R$ 14,32 | 11,8% | 10 | 113 | 0 |
+| USG Abdome Total | R$ 9,74 | 8,0% | 3 | 34 | 0 |
+| USG Mamas | R$ 1,58 | 1,3% | 2 | 11 | 0 |
+| USG Articulações (MSK) | R$ 0,23 | 0,2% | 1 | 24 | 0 |
+| USG Pelve e Transvaginal | R$ 0,00 | 0,0% | 0 | 5 | 0 |
+| USG Próstata | R$ 0,00 | 0,0% | 0 | 0 | 0 |
+| USG Tireoide | R$ 0,00 | 0,0% | 0 | 0 | 0 |
+
+O gatilho definiu o corte em 80%. Deu **78,7%** — passou raspando, e a
+concentração caiu de 93% para 78,7%. Mas o número de corte é o menos importante
+aqui:
+
+**O grupo genérico entregou as 9 conversões. Os sete grupos de anatomia
+entregaram zero, somando R$ 25,87 e 16 cliques.**
+
+Isso é mais forte do que o critério pedia. Não é só que a verba se concentra: é
+que a segmentação por anatomia **não produz**. Três dos oito grupos não tiveram
+uma única impressão em sete dias.
+
+**Recomendação:** consolidar por intenção, como na Toxicológico — que roda quatro
+grupos (Local, Preço, CNH/DETRAN, Clínica/Laboratório) e distribui verba entre
+eles de fato. A tradução para ultrassom seria algo como "Local", "Preço",
+"Perto de Mim" e "Modalidade Específica", com os oito grupos anatômicos fundidos
+no último. Não apliquei: é reestruturação, não ajuste, e merece decisão sua.
+
+## 3. Termos de busca — apareceu obstétrico, e apareceu coisa pior
+
+Apareceu `ultrassom obstétrico em caraguatatuba` (R$ 2,52) e `ultrassom
+morfológico` (R$ 0,32), apesar de `obstetrico` e `morfologico` já estarem na lista
+de negativas. E apareceu **`ecocardiograma caraguatatuba`** (R$ 12,59, 1
+conversão), exame que a clínica não realiza.
+
+Causa raiz: **negativas do Google não pegam variantes acentuadas**, e a lista
+inteira foi escrita sem acento. Detalhado em
+`docs/revisao-7dias-ultrassom-modo-b.md`.
+
+Corrigido: **30 negativas aplicadas** na campanha (8 do bloco cardíaco, 22 pares
+acentuados). Conforme o próprio checklist mandava, isso teve prioridade sobre
+qualquer ajuste de lance.
+
+## 4. Impressões da Obstétrica — caíram, mas não foi a Modo B
+
+**A campanha `24112138449` está PAUSED.** Entregou em 06/09 (R$ 11,95, 5 cliques)
+e 07/09 (R$ 13,37, 4 cliques, 1 conversão) e parou a partir de 08/09. Nos 7 dias
+somou 8 impressões em dois grupos; os outros três zeraram.
+
+O critério do checklist ("as impressões não devem cair, senão a Modo B está
+roubando tráfego") deu resultado ruim, mas **por outro motivo**: a queda é a
+pausa, não canibalização. Não foi alteração minha.
+
+Enquanto ela estiver pausada, as negativas obstétricas da Modo B — que acabei de
+reforçar com as versões acentuadas — jogam fora busca de gestante sem que ninguém
+a recolha. Se a pausa foi intencional, o certo é **remover** `obstetrico` e
+`obstétrico` da Modo B; se foi acidental, é reativar a Obstétrica.
+
+## 5. CPA — abaixo do volume mínimo para reagir
+
+9 conversões, contra o piso de ~15 definido no checklist. **CPA de R$ 11,62**
+(5 dias completos, 08–12/09), contra R$ 128,83 antes da pausa.
+
+O número é excelente, mas 9 conversões ainda é pouco para tratar como estável.
+Conforme combinado, **não mexi no lance** — o CPA-alvo segue em R$ 20,00.
+
+## Placar do checklist
+
+| # | Item | Previsto | Real | |
+|---|---|---|---|---|
+| 1 | CPC | R$ 1,00–1,50 | R$ 2,61 | ❌ hipótese errada |
+| 2 | Concentração no grupo genérico | < 80% | 78,7% — mas com 100% das conversões | ⚠️ passou no número, falhou no mérito |
+| 3 | Termos obstétricos | nenhum | apareceram, mais um cardíaco | ❌ corrigido |
+| 4 | Impressões da Obstétrica | estáveis | colapsaram (campanha pausada) | ⚠️ outra causa |
+| 5 | CPA | não reagir < 15 conv. | 9 conv., R$ 11,62 | ✅ não reagi |
+
+A campanha está entregando muito acima do que entregava. Dos cinco itens, os dois
+que apontam trabalho real são o **2** (estrutura por intenção) e o **4** (decidir
+o que fazer com a Obstétrica) — ambos aguardando decisão sua.
