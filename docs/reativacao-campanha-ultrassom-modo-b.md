@@ -689,3 +689,80 @@ até então existia **apenas na campanha Obstétrica, pausada**.
 
 As negativas de marca própria e de concorrente da revisão acima. Sem elas, a
 ampla segue levando ~R$ 22/semana para busca que não é de ultrassom.
+
+---
+
+## Aplicado em 21/09/2026 — negativas
+
+### Modo B (`24117676295`), nível de campanha — 20 negativas
+
+Marca própria: `total quality`, `quality caraguatatuba`.
+
+Concorrentes com clique e gasto: `uroproct`, `central med`, `mastellini`.
+
+Concorrentes com impressão: `amed caraguatatuba`, `clinica neon`,
+`clínica neon`, `doma radiologia`, `eco norte`, `econorte`, `estela maris`,
+`clinica sumare`, `clínica sumaré`, `clinica beira mar`, `clínica beira mar`,
+`heimar`, `hospital regional`, `viddas`, `amecaragua`.
+
+Todas em AMPLA, com **par acentuado onde havia acento** — negativa sem acento
+não bloqueia termo com acento, foi o que custou caro em 14/09.
+
+### HOLTER (`23957223102`), nível de campanha — 6 negativas
+
+`ecocardiograma`, `ecocardiografia`, `ecodoppler`, `ecodopplercardiograma`,
+`eco doppler`, `econorte` — todas em AMPLA.
+
+### Por que a HOLTER vazava mesmo já tendo negativa de ecocardiograma
+
+A leitura de volta mostrou que a campanha **já tinha** `Ecocardiograma` em
+AMPLA e `ecocardiograma` em FRASE. Ainda assim os três termos apareciam. O
+motivo é o mesmo mecanismo do acento, por outra via — **negativa casa token,
+não radical**:
+
+| Termo que vazava | Por que a negativa existente não pegava |
+|---|---|
+| `ecodopplercardiograma` | é **uma palavra só**; não contém o token `ecocardiograma` |
+| `ecocardiografia transtorácica` | `ecocardiografia` ≠ `ecocardiograma` |
+| `econorte ecocardiografia caraguatatuba` | idem |
+
+As três novas fecham exatamente essas brechas.
+
+## O que NÃO foi aplicado, e por quê — correção da recomendação 2
+
+A recomendação 2 da revisão acima mandava negativar o genérico de clínica
+(`clínica mais próxima de mim`, `clinicas caraguatatuba`, `clinicas medicas`).
+**Não apliquei, porque refiz a conta e ela desmente a recomendação.**
+
+| Termo | Cliques | Gasto | Conv | CPA |
+|---|---|---|---|---|
+| `clínica mais próxima de mim` | 8 | R$ 12,59 | 1 | **R$ 12,59** |
+| `clinicas caraguatatuba` | 1 | R$ 4,63 | 1 | **R$ 4,63** |
+
+São **2 das 3 conversões da campanha**, por R$ 17,22 — contra um CPA médio de
+**R$ 39,46**. Esses dois termos são a aquisição mais barata da Modo B, de 3 a 8
+vezes abaixo da média dela.
+
+Minha justificativa era que "a campanha de laboratório já cobre essa demanda
+mais barato". Fui conferir e **não cobre**: nos mesmos 7 dias a Leads-Search-15
+rodou a ~R$ 14,80 por conversão e a MAPS a ~R$ 12,25. Comparável ou mais caro,
+não mais barato. Eu afirmei sem medir.
+
+Negativar teria tirado as duas melhores fontes de conversão da campanha com
+base numa premissa errada.
+
+Resta uma preocupação legítima e diferente: **canibalização** — duas campanhas
+disputando a mesma busca genérica encarecem o leilão das duas. Mas isso é
+argumento para consolidar, não para bloquear, e exige olhar sobreposição de
+leilão antes de mexer.
+
+## Efeito esperado
+
+A Modo B perde ~R$ 22/semana de tráfego de marca e concorrente que não
+convertia, e **mantém** os dois termos que convertem barato. As duas
+palavras-chave novas (`[ultrassonografia]` e `"ultrassonografia caraguatatuba"`)
+passam a disputar espaço que antes ia para busca fora do tema.
+
+Próxima verificação em 7 dias: se o CPA não cair da casa dos R$ 39, o problema
+não é mais de palavra nem de negativa — é de volume de busca de ultrassom em
+Caraguá não sustentar R$ 15/dia, e aí a decisão é de orçamento.
