@@ -647,3 +647,45 @@ Nada foi alterado na conta. Em ordem de impacto:
 4. **Aplicar as negativas de ecocardiograma na campanha HOLTER**, que hoje tem
    impressão em três termos do exame que a clínica não realiza.
 
+
+---
+
+## Aplicado em 21/09/2026 — palavras-chave de `ultrassonografia`
+
+A pedido do Alex, no grupo **Ultrassom Genérico Local** (`205841632544`) da
+Modo B (`24117676295`):
+
+| Palavra | Tipo | Criterion ID | Resultado |
+|---|---|---|---|
+| `ultrassonografia` | EXATA | `2372560910` | ✅ adicionada |
+| `ultrassonografia caraguatatuba` | FRASE | `2419844594076` | ✅ adicionada |
+| `ultrassonografia em caraguatatuba` | FRASE | — | ❌ recusada pelo Google |
+
+A recusa veio como *"A policy was violated. See PolicyViolationDetails"*. O
+Windsor não expõe o detalhe da violação, então **não sei o motivo** — e não vou
+inventar um. O que dá para afirmar é que não é o termo em si: a variante sem o
+"em" passou no mesmo lote.
+
+**A recusa não abre buraco de cobertura.** Desde 2021 a correspondência de
+frase do Google casa consultas com palavras inseridas no meio, desde que o
+sentido se mantenha — `"ultrassonografia caraguatatuba"` cobre a busca
+"ultrassonografia em caraguatatuba". A terceira palavra era redundante na
+prática.
+
+### Por que essas e não as que foram pedidas ao pé da letra
+
+`ultrassonografia` e `usg` **já estavam cadastradas** na Modo B antes deste
+pedido — `ultrassonografia` em AMPLA e FRASE, `usg` em AMPLA e FRASE, mais
+`usg caraguatatuba`, `clinica de ultrassonografia`, `fazer ultrassonografia` e
+`ultrassonografia particular`. Reincluí-las seria duplicata.
+
+O que faltava era **controle**: `ultrassonografia` só tinha tração em AMPLA, e
+é justamente ela que o Google vinha traduzindo em `uroproct caraguatatuba`,
+`central med` e `clínica mais próxima de mim`. A EXATA dá um caminho que não
+depende da ampla; `ultrassonografia caraguatatuba` traz a intenção local, que
+até então existia **apenas na campanha Obstétrica, pausada**.
+
+### O que continua sem ser aplicado
+
+As negativas de marca própria e de concorrente da revisão acima. Sem elas, a
+ampla segue levando ~R$ 22/semana para busca que não é de ultrassom.
