@@ -526,3 +526,124 @@ Conforme combinado, **não mexi no lance** — o CPA-alvo segue em R$ 20,00.
 A campanha está entregando muito acima do que entregava. Dos cinco itens, os dois
 que apontam trabalho real são o **2** (estrutura por intenção) e o **4** (decidir
 o que fazer com a Obstétrica) — ambos aguardando decisão sua.
+
+---
+
+# Segunda revisão de 7 dias — 14 a 20/09/2026
+
+Vencida desde 21/09, destravada quando o conector Windsor voltou. Dados puxados
+em 21/09 às 08:00 UTC, conta 920-715-3288, campanha `24117676295`.
+
+## Os quatro pontos do checklist
+
+### 1. Vazamento: **resolvido** ✅
+
+Nenhum termo de busca da Modo B com `ecocardiograma`, `obstétrico`,
+`morfológico`, `ecodoppler` ou variação. As 30 negativas de 14/09 fecharam o
+buraco — inclusive as acentuadas, que eram o que o meu script de verificação
+não pegava.
+
+Os únicos termos proibidos que aparecem na conta inteira estão na campanha
+**HOLTER (`23957223102`)**: `ecodopplercardiograma`,
+`ecocardiografia transtorácica` e `econorte ecocardiografia caraguatatuba` —
+os três com **0 cliques e R$ 0,00**. São impressões sem custo, mas indicam que
+aquela campanha precisa das mesmas negativas que a Modo B recebeu.
+
+### 2. CPA: **piorou muito** ❌
+
+| | Revisão anterior | Agora (14–20/09) |
+|---|---|---|
+| Conversões | 9 | **3** |
+| Gasto | — | R$ 118,37 |
+| **CPA** | **R$ 11,62** | **R$ 39,46** |
+| CPC médio | R$ 2,61 | R$ 3,04 |
+| Cliques | — | 39 |
+| Impressões | — | 251 (36/dia) |
+
+O CPA triplicou e as conversões caíram para um terço. Quatro dos sete dias
+fecharam com **zero** conversão.
+
+### 3. Orçamento: **melhorou, ainda estoura** ⚠️
+
+R$ 118,37 em 7 dias = **R$ 16,91/dia** contra R$ 15/dia definidos. Estouro de
+**12,7%**, contra os 39% da revisão anterior (~R$ 20,90/dia).
+
+### 4. Obstétrica `24112138449`: **PAUSED** ✅
+
+Confirmado. Também seguem pausadas a Doppler `24112137057`, a Sexagem Fetal
+`24169249335` e a `[TQ] Ultrassom com Doppler` `24220275336`.
+
+## O achado que explica o CPA: a campanha não está comprando ultrassom
+
+**Zero cliques em termos de ultrassom nos 7 dias.** Nenhum.
+
+Os termos de ultrassom aparecem só como impressão — `ultrassom caraguatatuba`
+(12 impressões), `ultrassom` (11), `usg transvaginal com preparo intestinal`
+(4), `transvaginal` (3), `ultrassonografia` (3), `ultrassom transvaginal` (3) —
+e **não recebem clique nenhum**.
+
+Os cliques pagos vão todos para outra coisa:
+
+| Termo | Cliques | Gasto | Conv | Natureza |
+|---|---|---|---|---|
+| clínica mais próxima de mim | 8 | R$ 12,59 | 1 | genérico |
+| clinicas medicas em caraguatatuba | 1 | R$ 7,19 | 0 | genérico |
+| **uroproct caraguatatuba** | 2 | R$ 5,66 | 0 | **concorrente** |
+| **total quality caraguatatuba** | 2 | R$ 5,59 | 0 | **marca própria** |
+| **central med** | 1 | R$ 5,40 | 0 | **concorrente** |
+| clinicas caraguatatuba | 1 | R$ 4,63 | 1 | genérico |
+| **laboratório mastellini caraguatatuba** | 1 | R$ 2,86 | 0 | **concorrente** |
+| **quality caraguatatuba** | 1 | R$ 2,34 | 0 | **marca própria** |
+| clinica caraguatatuba | 1 | R$ 1,33 | 0 | genérico |
+| exames de imagem caraguatatuba | 1 | R$ 0,95 | 0 | genérico |
+
+Somando: **R$ 13,92 em marca de concorrente** e **R$ 7,93 em marca própria** —
+R$ 21,85, ou 45% do gasto visível, com **zero conversões**.
+
+Pagar por `total quality caraguatatuba` é o pior dos dois: quem digita o nome
+da clínica ia chegar de graça pelo orgânico ou pelo perfil do Google.
+
+E ainda há impressão em mais concorrentes sem clique: `amed caraguatatuba`,
+`clinica neon caraguatatuba`, `doma radiologia caraguatatuba`,
+`clínica eco norte caraguatatuba`, `estela maris caraguatatuba`,
+`clinica sumaré caraguatatuba`, `clínica beira mar caraguatatuba`,
+`dr heimar martins caraguatatuba`, `hospital regional de caraguatatuba`.
+
+### Ressalva de cobertura
+
+Os termos acima somam R$ 48,54 dos R$ 118,37 gastos — **41%**. O Google não
+divulga termos de baixo volume, então 59% do gasto está em buscas que não dá
+para auditar. A conclusão vale para o que é visível; o resto é presunção
+razoável, não medição.
+
+## Leitura
+
+As negativas de 14/09 consertaram o problema que tinham de consertar: a
+campanha parou de comprar exames que a clínica não faz. Mas elas não
+resolveram — e nem podiam — o problema de fundo: **a correspondência ampla
+continua traduzindo "ultrassom" em "clínica em Caraguatatuba"**, e é nisso que
+o dinheiro está indo.
+
+O CPA de R$ 39,46 não é sinal de que o ultrassom não converte. É sinal de que
+a campanha quase não anuncia ultrassom para quem busca ultrassom.
+
+## Recomendações, nenhuma aplicada
+
+Nada foi alterado na conta. Em ordem de impacto:
+
+1. **Negativar marca própria e concorrentes na Modo B** — `total quality`,
+   `quality caraguatatuba`, `uroproct`, `central med`, `mastellini`, `amed`,
+   `neon`, `doma radiologia`, `eco norte`, `estela maris`, `sumaré`,
+   `beira mar`, `heimar`, `hospital regional`. Devolve ~R$ 22 por semana de
+   gasto sem retorno. **Atenção às acentuadas:** negativa sem acento não bloqueia
+   termo com acento, foi o que já nos custou caro em 14/09.
+2. **Negativar o genérico de clínica** — `clínica mais próxima de mim`,
+   `clinicas caraguatatuba`, `clinicas medicas`. Converteu 2 em 11 cliques, mas
+   é demanda que a campanha de laboratório já cobre mais barato.
+3. **Rever a correspondência das palavras-chave.** Se depois de negativar o
+   volume cair a quase nada, a resposta não é alargar de novo: é que não há
+   busca de ultrassom suficiente em Caraguá para sustentar R$ 15/dia — e aí a
+   decisão é de orçamento, não de palavra-chave.
+4. **Aplicar as negativas de ecocardiograma na campanha HOLTER**, que hoje tem
+   impressão em três termos do exame que a clínica não realiza.
+
