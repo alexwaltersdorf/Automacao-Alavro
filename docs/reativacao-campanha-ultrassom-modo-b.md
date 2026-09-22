@@ -766,3 +766,114 @@ passam a disputar espaço que antes ia para busca fora do tema.
 Próxima verificação em 7 dias: se o CPA não cair da casa dos R$ 39, o problema
 não é mais de palavra nem de negativa — é de volume de busca de ultrassom em
 Caraguá não sustentar R$ 15/dia, e aí a decisão é de orçamento.
+
+---
+
+# Verificação de 24h — 22/09/2026, 10:10 UTC
+
+Dados: `last_2d` do relatório de termos de pesquisa, conta 920-715-3288, mais a
+lista completa de critérios negativos por campanha.
+
+## 1. As negativas pegaram na Modo B
+
+Os 16 termos que motivaram a aplicação — uroproct, central med, mastellini,
+total quality, quality caraguatatuba, amed, neon, doma radiologia, eco
+norte/econorte, estela maris, sumaré, beira mar, heimar, hospital regional,
+viddas, amecaragua — **não aparecem em nenhum termo da Modo B** nas últimas 48h.
+Todos estão confirmados na lista de negativos da campanha.
+
+## 2. Mas a HOLTER está vazando, e por uma falha que eu já conhecia
+
+`[ PQ ] [HOLTER]` (23957223102) recebeu um clique em
+**"clínica eco norte caraguatatuba" — R$ 2,95**.
+
+A HOLTER tem `econorte` (BROAD). Não tem `eco norte`. **Uma palavra não bloqueia
+duas.** É o mesmo erro de token que já custou caro duas vezes nesta conta
+(`obstetrico` × `obstétrico`; `ecocardiograma` × `ecodopplercardiograma`). Na
+Modo B eu apliquei as duas formas; na HOLTER só existe a colada.
+
+A HOLTER não tem, e a Modo B tem: `eco norte`, `viddas`, `medcenter`,
+`mastellini`, `central med`, `doma radiologia`, `estela maris`, `heimar`,
+`hospital regional`, `amecaragua`. E já há impressão acumulando em cada uma:
+
+| Termo (HOLTER, 48h) | Impressões | Cliques | Custo |
+| --- | ---: | ---: | ---: |
+| clínica eco norte caraguatatuba | 8 | **1** | **R$ 2,95** |
+| ecocardiodoppler | 4 | 0 | R$ 0 |
+| clinica medcor caraguatatuba | 2 | 0 | R$ 0 |
+| medicor caraguatatuba | 2 | 0 | R$ 0 |
+| viddas medicos e diagnosticos | 2 | 0 | R$ 0 |
+| dr orli caraguatatuba | 3 | 0 | R$ 0 |
+| medcenter caraguatatuba | 1 | 0 | R$ 0 |
+
+## 3. `ecocardiodoppler` — a quarta variante
+
+A HOLTER já nega `ecocardiograma`, `ecocardiografia`, `ecodoppler`,
+`ecodopplercardiograma` e `eco doppler`. Mesmo assim serviu 4 impressões para
+**`ecocardiodoppler`**, que é uma palavra só e portanto um token novo. Nenhuma
+das cinco negativas o alcança — e `ecocardio`, que a Modo B tem, também não
+alcançaria, porque negativa casa token inteiro, não prefixo.
+
+Zero clique até agora. Vai clicar.
+
+## 4. As palavras novas estão no ar, sem clique ainda
+
+A família `ultrassonografia` serviu **15 impressões e 0 cliques** em 48h:
+`ultrassonografia` (5), `ultrassonografia caraguatatuba` (5),
+`ultrassonografia do pulso preço` (2), `exame de ultrassonografia` (1),
+`ultrassonografia transvaginal` (1), `ultrassonografista` (1).
+`usg` serviu 3 impressões, 0 cliques.
+
+As palavras estão ativas e entrando em leilão. Dois dias não dizem se elas
+convertem — dizem que elas existem.
+
+## 5. Modo B em 48h
+
+6 cliques, **R$ 17,47**, **0 conversões**.
+
+| Termo | Cliques | Custo |
+| --- | ---: | ---: |
+| clínica mais próxima de mim | 3 | R$ 4,29 |
+| ultrassom abdômen total | 1 | R$ 7,61 |
+| ultrassom vaginal | 1 | R$ 4,24 |
+| clinica caraguatatuba | 1 | R$ 1,33 |
+
+Dois cliques (R$ 11,85) em intenção de ultrassom de verdade; quatro (R$ 5,62)
+em termo genérico de clínica — os mesmos que eu **não** negativei, e continuo
+não negativando: 48h sem conversão não desmente 30 dias com conversão barata.
+
+**Nada a decidir aqui.** O critério da revisão de 7 dias foi registrado antes do
+resultado e continua valendo: em 28/09, se o CPA não sair da casa dos R$ 39, o
+problema passa a ser volume de busca, não palavra, e a decisão vira de orçamento.
+
+## 6. Marca paga fora das campanhas de marca
+
+| Campanha | Termo | Cliques | Custo | Conv. |
+| --- | --- | ---: | ---: | ---: |
+| Leads-Search-15 [ LABORATÓRIO ] | total quality caraguatatuba | 5 | R$ 9,02 | 0 |
+| Leads-Search-15 [ LABORATÓRIO ] | clinica total quality caraguatatuba | 1 | R$ 2,10 | 0 |
+| [ PQ ] [ RAIO-X ] | total quality caraguatatuba | 1 | R$ 0,64 | 0 |
+
+**R$ 11,76 em 48h, 7 cliques, zero conversão.** A Modo B e a HOLTER bloqueiam
+`total quality`; estas duas não.
+
+Isto **não** é automaticamente desperdício: defender a própria marca no leilão
+é estratégia legítima quando concorrente dá lance nela. Mas se é para defender,
+o lugar é uma campanha de marca com lance e texto próprios, não sobra de
+campanha de exame. E 7 cliques sem conversão é amostra pequena demais para
+afirmar qualquer coisa sobre a qualidade desse tráfego.
+
+Decisão do Alex, não minha.
+
+## O que proponho (nenhuma ação aplicada)
+
+1. **Copiar para a HOLTER as negativas de concorrente que só a Modo B tem**, com
+   as duas grafias sempre: `eco norte` + `econorte`, `viddas`, `medcenter` +
+   `med center`, `medcor`, `medicor`, `mastellini`, `central med`,
+   `doma radiologia`, `estela maris`, `heimar`, `hospital regional`,
+   `amecaragua`, `inel`, `plani`, `biotox`.
+2. **Acrescentar `ecocardiodoppler` e `ecocardiodopler`** à HOLTER.
+3. **Marca**: decidir entre bloquear `total quality` na Leads-Search-15 e na
+   RAIO-X, ou assumir a defesa de marca numa campanha própria.
+
+Os itens 1 e 2 mexem em conta de anúncio ao vivo e não foram executados.
